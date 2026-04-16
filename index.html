@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LHC Boston 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0C1E35;--navy2:#1A3558;--sky:#2B9ED8;--sky-l:#E0F2FE;
+  --orange:#F4821F;--orange-l:#FEF3E8;
+  --text:#1E293B;--muted:#64748B;--border:#E2E8F0;
+  --bg:#F5F7FA;--white:#FFFFFF;
+  --green:#059669;--green-l:#ECFDF5;
+  --amber:#D97706;--amber-l:#FFFBEB;
+  --purple:#7C3AED;--purple-l:#F5F3FF;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow-x:hidden;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font-size:15px;}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.fade-in{animation:fadeInUp .3s ease both;}
+.fade-in-2{animation:fadeInUp .3s .06s ease both;}
+.fade-in-3{animation:fadeInUp .3s .12s ease both;}
+.fade-in-4{animation:fadeInUp .3s .18s ease both;}
+.scale-in{animation:scaleIn .25s ease both;}
+
+/* ── PROFILE SCREEN ── */
+#profile-screen{
+  position:fixed;inset:0;background:var(--navy);z-index:200;
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.ps-hero{
+  padding:44px 24px 32px;text-align:center;
+  background:linear-gradient(160deg,#0C1E35 0%,#0F2E50 60%,#0C1E35 100%);
+  position:relative;overflow:hidden;
+}
+.ps-hero::before{
+  content:'';position:absolute;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(43,158,216,.15) 0%,transparent 70%);
+  top:-80px;right:-60px;pointer-events:none;
+}
+.ps-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;padding:6px 14px;margin-bottom:22px;
+  animation:fadeIn .5s ease both;
+}
+.ps-pill span{color:var(--sky);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+.ps-pill .dot{width:5px;height:5px;background:var(--orange);border-radius:50%;animation:pulse 2s infinite;}
+.ps-title{font-family:'Fraunces',serif;font-size:34px;color:white;line-height:1.1;margin-bottom:10px;animation:fadeInUp .4s .1s ease both;}
+.ps-title em{font-style:italic;color:var(--sky);}
+.ps-sub{font-size:13px;color:rgba(255,255,255,.45);animation:fadeInUp .4s .2s ease both;}
+.ps-body{padding:0 16px 48px;max-width:480px;margin:0 auto;width:100%;animation:fadeInUp .4s .25s ease both;}
+.ps-groups{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.ps-gcard{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:14px;overflow:hidden;transition:border-color .15s;}
+.ps-gcard.active{border-color:rgba(43,158,216,.5);}
+.ps-ghdr{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s;user-select:none;}
+.ps-ghdr:hover{background:rgba(255,255,255,.07);}
+.ps-gicon{font-size:22px;flex-shrink:0;}
+.ps-ginfo{flex:1;}
+.ps-gname{font-size:14px;font-weight:600;color:white;line-height:1.2;}
+.ps-gcount{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
+.ps-gchev{color:rgba(255,255,255,.3);font-size:12px;transition:transform .2s;flex-shrink:0;}
+.ps-gcard.active .ps-gchev{transform:rotate(180deg);}
+.ps-gdrop{display:none;padding:0 12px 12px;}
+.ps-gcard.active .ps-gdrop{display:block;animation:fadeIn .18s ease both;}
+.ps-gsel{
+  width:100%;padding:13px 40px 13px 14px;
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;
+  background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.18);
+  border-radius:10px;color:white;outline:none;
+  appearance:none;-webkit-appearance:none;cursor:pointer;
+  transition:border-color .2s;
+}
+.ps-gsel option{background:#1A3558;color:white;}
+.ps-gsel:focus{border-color:var(--sky);}
+.ps-gsel-wrap{position:relative;}
+.ps-gsel-arrow{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,.4);pointer-events:none;}
+.ps-preview{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  border-radius:12px;padding:13px 15px;margin-bottom:12px;
+  display:none;align-items:center;gap:12px;
+}
+.ps-preview.visible{display:flex;animation:fadeIn .2s ease both;}
+.ps-preview-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0;}
+.ps-preview-name{font-size:14px;font-weight:600;color:white;}
+.ps-preview-role{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;}
+.ps-confirm-btn{
+  width:100%;padding:16px;border-radius:14px;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;
+  background:var(--orange);color:white;transition:all .15s;
+  display:none;letter-spacing:.01em;
+}
+.ps-confirm-btn:hover{background:#E0720F;transform:translateY(-1px);}
+.ps-confirm-btn:active{transform:scale(.98);}
+.ps-confirm-btn.visible{display:block;animation:scaleIn .2s ease both;}
+
+/* ── APP ── */
+#app{display:none;min-height:100vh;}
+.app-hdr{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 1px 0 rgba(255,255,255,.06);}
+.app-hdr-top{display:flex;align-items:center;justify-content:space-between;padding:10px 15px 8px;}
+.app-mark{width:30px;height:30px;background:var(--orange);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:15px;color:white;flex-shrink:0;transition:transform .15s;}
+.app-mark:hover{transform:scale(1.08);}
+.app-titles{margin-left:9px;flex:1;}
+.app-t{color:white;font-size:13px;font-weight:600;}
+.app-s{color:var(--sky);font-size:9px;letter-spacing:.07em;text-transform:uppercase;margin-top:1px;}
+.profile-chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 10px;cursor:pointer;transition:all .15s;}
+.profile-chip:hover{background:rgba(255,255,255,.14);}
+.chip-av{width:18px;height:18px;border-radius:50%;font-size:8px;font-weight:700;color:white;display:flex;align-items:center;justify-content:center;}
+.chip-nm{font-size:11px;color:rgba(255,255,255,.75);font-weight:500;max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.app-nav{display:flex;overflow-x:auto;scrollbar-width:none;padding:0 10px;gap:2px;}
+.app-nav::-webkit-scrollbar{display:none;}
+.nav-btn{flex-shrink:0;padding:8px 12px;font-size:12px;font-weight:500;color:rgba(255,255,255,.42);border-bottom:2px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;letter-spacing:.02em;}
+.nav-btn:hover{color:rgba(255,255,255,.72);}
+.nav-btn.active{color:var(--sky);border-bottom-color:var(--sky);}
+
+/* ── VIEWS ── */
+.view{display:none;padding:16px;max-width:680px;margin:0 auto;}
+.view.active{display:block;animation:fadeInUp .28s ease both;}
+@media(min-width:700px){.view{padding:22px 20px;}}
+.v-title{font-family:'Fraunces',serif;font-size:25px;color:var(--navy);font-weight:500;margin-bottom:3px;}
+.v-sub{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+
+/* ── TAGS ── */
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 7px;border-radius:4px;}
+.tag-ok{background:var(--green-l);color:#057a4c;}
+.tag-pend{background:var(--amber-l);color:#92550a;}
+.tag-walk{background:#ECFDF5;color:#065f46;}
+.tag-uber{background:var(--sky-l);color:#1060A0;}
+.tag-opt{background:var(--purple-l);color:#5b21b6;}
+.tag-coms{background:#FDF4FF;color:#7e22ce;}
+
+/* ── HOME ── */
+.home-hero{background:linear-gradient(135deg,var(--navy) 0%,#0D3060 50%,#0C1E35 100%);border-radius:16px;padding:26px 22px;margin-bottom:15px;position:relative;overflow:hidden;}
+.home-hero::before{content:'';position:absolute;width:260px;height:260px;background:radial-gradient(circle,rgba(43,158,216,.18) 0%,transparent 70%);top:-80px;right:-60px;pointer-events:none;}
+.home-hero::after{content:'';position:absolute;width:140px;height:140px;background:radial-gradient(circle,rgba(244,130,31,.12) 0%,transparent 70%);bottom:-40px;left:-30px;pointer-events:none;}
+.home-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(244,130,31,.2);border:1px solid rgba(244,130,31,.3);border-radius:20px;padding:4px 11px;margin-bottom:13px;}
+.home-badge span{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--orange);}
+.home-greeting{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:3px;}
+.home-title{font-family:'Fraunces',serif;font-size:27px;color:white;line-height:1.15;margin-bottom:5px;}
+.home-title em{font-style:italic;color:var(--sky);}
+.home-dates{font-size:12px;color:rgba(255,255,255,.42);}
+.home-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px;}
+.home-stat{background:white;border:1px solid var(--border);border-radius:10px;padding:11px 6px;text-align:center;transition:transform .15s;}
+.home-stat:hover{transform:translateY(-2px);}
+.home-stat .n{font-size:21px;font-weight:700;color:var(--navy);line-height:1;}
+.home-stat .l{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3;}
+.home-about{background:var(--navy);border-radius:14px;padding:17px;color:white;margin-bottom:13px;}
+.home-about h3{font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin-bottom:7px;}
+.home-about p{font-size:13px;color:rgba(255,255,255,.62);line-height:1.7;}
+.home-today{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;}
+.home-today-hdr{background:var(--navy);padding:11px 15px;color:white;display:flex;align-items:center;justify-content:space-between;}
+.home-today-hdr .lbl{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sky);}
+.home-today-hdr .day{font-family:'Fraunces',serif;font-size:16px;}
+.home-ev{padding:9px 15px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:9px;}
+.home-ev:last-of-type{border-bottom:none;}
+.home-ev-time{font-size:10px;font-weight:600;color:var(--muted);min-width:48px;flex-shrink:0;padding-top:2px;}
+.home-ev-name{font-size:13px;font-weight:500;color:var(--text);}
+.home-ev-loc{font-size:11px;color:var(--muted);margin-top:1px;}
+.home-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.home-card{background:white;border:1px solid var(--border);border-radius:12px;padding:14px;transition:box-shadow .15s,transform .15s;}
+.home-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.06);transform:translateY(-1px);}
+.home-card-icon{font-size:19px;margin-bottom:6px;}
+.home-card-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+.home-card-text{font-size:12px;color:var(--muted);line-height:1.6;}
+.home-card-text a{color:var(--sky);text-decoration:none;}
+.home-quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.home-qbtn{background:white;border:1.5px solid var(--border);border-radius:10px;padding:11px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:all .15s;}
+.home-qbtn:hover{border-color:var(--sky);box-shadow:0 2px 8px rgba(43,158,216,.12);}
+.home-qbtn .icon{font-size:17px;}
+.home-qbtn .lbl{font-size:12px;font-weight:600;color:var(--navy);}
+
+/* ── AGENDA ── */
+.day-pills{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:15px;padding-bottom:2px;}
+.day-pills::-webkit-scrollbar{display:none;}
+.day-pill{flex-shrink:0;padding:7px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:white;border:1.5px solid var(--border);color:var(--muted);transition:all .18s;white-space:nowrap;}
+.day-pill:hover:not(.active){border-color:var(--sky);color:var(--navy);}
+.day-pill.active{background:var(--navy);color:white;border-color:var(--navy);}
+.day-hero{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:14px;padding:16px 18px;margin-bottom:13px;color:white;position:relative;overflow:hidden;}
+.day-hero::after{content:'';position:absolute;right:-20px;top:-20px;width:100px;height:100px;background:rgba(43,158,216,.09);border-radius:50%;pointer-events:none;}
+.day-hero-n{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--sky);font-weight:600;margin-bottom:3px;}
+.day-hero-t{font-family:'Fraunces',serif;font-size:20px;font-weight:500;margin-bottom:3px;}
+.day-hero-s{font-size:12px;color:rgba(255,255,255,.5);}
+.tl-row{display:grid;grid-template-columns:54px 16px 1fr;align-items:start;}
+.tl-time{font-size:10px;color:var(--muted);text-align:right;padding-top:14px;padding-right:9px;line-height:1.3;font-weight:500;}
+.tl-stem{display:flex;flex-direction:column;align-items:center;}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:15px;z-index:1;transition:transform .15s;}
+.tl-line{width:2px;flex:1;min-height:10px;}
+.tl-card{background:white;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;margin-left:8px;overflow:hidden;border-left:3px solid transparent;cursor:pointer;transition:box-shadow .18s,transform .15s;}
+.tl-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.06);transform:translateX(2px);}
+.tl-inner{padding:10px 13px;}
+.tl-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.35;}
+.tl-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.tl-detail{display:none;padding:10px 13px 12px;border-top:1px solid var(--border);background:var(--bg);}
+.tl-card.open .tl-detail{display:block;animation:fadeIn .2s ease both;}
+.tl-dtext{font-size:12px;color:#475569;line-height:1.7;margin-bottom:8px;}
+.tl-addr{font-size:11px;color:var(--muted);margin-bottom:7px;}
+.maps-btn{display:inline-flex;align-items:center;gap:5px;background:var(--navy);color:white;font-size:11px;font-weight:600;padding:6px 11px;border-radius:6px;text-decoration:none;transition:all .15s;}
+.maps-btn:hover{background:var(--navy2);transform:translateY(-1px);}
+.trail-toggle{display:flex;align-items:center;justify-content:space-between;background:var(--navy);color:white;border-radius:8px;padding:7px 11px;cursor:pointer;margin-top:8px;font-size:11px;font-weight:600;transition:background .15s;}
+.trail-toggle:hover{background:var(--navy2);}
+.trail-list{display:none;margin-top:5px;}
+.trail-list.open{display:block;animation:fadeIn .2s ease both;}
+.trail-stop{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.trail-stop:last-child{border-bottom:none;}
+.trail-num{width:20px;height:20px;border-radius:50%;background:var(--sky);color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.trail-name{font-size:12px;font-weight:600;color:var(--text);}
+.trail-desc{font-size:11px;color:var(--muted);line-height:1.4;margin-top:2px;}
+.trail-link{font-size:10px;color:var(--sky);text-decoration:none;margin-top:3px;display:inline-block;}
+
+/* ── LUGARES ── */
+.lugar-card{background:white;border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:box-shadow .15s;}
+.lugar-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.05);}
+.lugar-hdr{padding:13px 15px;display:flex;align-items:flex-start;gap:11px;cursor:pointer;transition:background .12s;}
+.lugar-hdr:hover{background:var(--bg);}
+.lugar-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.lugar-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.lugar-addr{font-size:11px;color:var(--muted);line-height:1.4;}
+.lugar-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
+.lugar-body{display:none;padding:0 15px 15px;border-top:1px solid var(--border);}
+.lugar-card.open .lugar-body{display:block;animation:fadeIn .2s ease both;}
+.lugar-sl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:11px 0 4px;}
+.lugar-txt{font-size:13px;color:#475569;line-height:1.7;}
+.lugar-ask{background:var(--sky-l);border-left:3px solid var(--sky);border-radius:0 8px 8px 0;padding:8px 11px;margin-top:8px;font-size:12px;color:#1060A0;line-height:1.6;}
+.lugar-ask strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.chip-d{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;}
+.cd1{background:#FFF7ED;color:#9a3412;}
+.cd2{background:#EFF6FF;color:#1d4ed8;}
+.cd3{background:var(--purple-l);color:#5b21b6;}
+.cd4{background:var(--green-l);color:#065f46;}
+
+/* ── MI VIAJE ── */
+.hotel-banner{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:14px;padding:16px;color:white;margin-bottom:12px;}
+.hotel-banner-nm{font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin-bottom:5px;}
+.hotel-banner-d{font-size:12px;color:rgba(255,255,255,.6);line-height:1.8;}
+.hotel-banner-d strong{color:var(--sky);}
+.fl-block{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:11px;}
+.fl-hdr{padding:10px 15px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.fh-arr{background:var(--green-l);color:#057a4c;}
+.fh-dep{background:var(--orange-l);color:#9a3412;}
+.fl-leg{display:grid;grid-template-columns:72px 1fr 72px;align-items:center;padding:11px 15px;border-bottom:1px solid var(--border);gap:8px;}
+.fl-leg:last-child{border-bottom:none;}
+.fl-leg-hl{background:rgba(43,158,216,.04);}
+.fl-leg-right{text-align:right;}
+.fl-code2{font-size:19px;font-weight:700;color:var(--navy);line-height:1;}
+.fl-code2.sky{color:var(--sky);}
+.fl-time2{font-size:14px;font-weight:600;color:var(--muted);margin-top:2px;}
+.fl-time2.main-time{font-size:20px;font-weight:700;color:var(--navy);}
+.fl-date2{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3;}
+.fl-leg-mid2{text-align:center;}
+.fl-fn{font-size:10px;font-weight:600;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 6px;display:inline-block;margin-bottom:4px;}
+.fl-arr-line{font-size:14px;color:var(--border);}
+.fl-note{font-size:10px;color:var(--sky);margin-top:2px;line-height:1.3;}
+
+/* Transfer info */
+.transfer-block{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:11px;}
+.transfer-hdr{padding:10px 15px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--bg);color:var(--navy);}
+.transfer-item{padding:13px 15px;border-bottom:1px solid var(--border);}
+.transfer-item:last-child{border-bottom:none;}
+.transfer-dir{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.tdir-arr{color:#057a4c;}
+.tdir-dep{color:#9a3412;}
+.transfer-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;font-size:12px;color:#475569;}
+.transfer-row:last-child{margin-bottom:0;}
+.transfer-icon{font-size:13px;flex-shrink:0;width:16px;}
+.transfer-txt{line-height:1.5;}
+.transfer-txt strong{color:var(--navy2);}
+
+/* ── DELEGACIÓN ── */
+.del-filter{display:flex;gap:6px;margin-bottom:13px;overflow-x:auto;scrollbar-width:none;}
+.del-filter::-webkit-scrollbar{display:none;}
+.del-fbtn{flex-shrink:0;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;background:white;border:1.5px solid var(--border);color:var(--muted);transition:all .15s;}
+.del-fbtn:hover{border-color:var(--sky);}
+.del-fbtn.active{background:var(--navy);color:white;border-color:var(--navy);}
+.del-glabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:14px 0 7px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.del-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;}
+@media(min-width:460px){.del-grid{grid-template-columns:repeat(3,1fr);}}
+.del-card{background:white;border:1px solid var(--border);border-radius:12px;padding:13px 11px;text-align:center;transition:box-shadow .15s,transform .12s;}
+.del-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.06);transform:translateY(-2px);}
+.del-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;margin:0 auto 7px;}
+.del-flag{font-size:15px;display:block;margin-bottom:2px;}
+.del-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:2px;}
+.del-role{font-size:10px;color:var(--muted);line-height:1.4;margin-bottom:5px;}
+
+/* ── FAQ ── */
+.faq-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--orange);margin:18px 0 7px;}
+.faq-cat:first-child{margin-top:0;}
+.faq-item{background:white;border:1px solid var(--border);border-radius:10px;margin-bottom:5px;overflow:hidden;transition:box-shadow .15s;}
+.faq-item:hover{box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.faq-q{padding:12px 15px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--text);}
+.faq-q:hover{background:var(--bg);}
+.faq-icon{color:var(--sky);font-size:17px;flex-shrink:0;transition:transform .2s;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
+.faq-a{display:none;padding:11px 15px;font-size:13px;color:#475569;line-height:1.75;border-top:1px solid var(--border);}
+.faq-item.open .faq-a{display:block;animation:fadeIn .2s ease both;}
+.faq-a ul{margin:5px 0 5px 15px;} .faq-a li{margin-bottom:3px;}
+.faq-a strong{color:var(--navy2);} .faq-a a{color:var(--sky);text-decoration:none;}
+
+/* ── MAPA ── */
+.map-section{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;}
+.map-section-hdr{background:var(--navy);padding:14px 16px;color:white;}
+.map-section-hdr h3{font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin-bottom:3px;}
+.map-section-hdr p{font-size:12px;color:rgba(255,255,255,.55);}
+.map-open-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--orange);color:white;font-size:14px;font-weight:600;padding:14px;text-decoration:none;transition:background .15s;border:none;width:100%;cursor:pointer;}
+.map-open-btn:hover{background:var(--orange2,#E0720F);}
+.map-day-links{padding:14px 16px;}
+.map-day-link-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px;}
+.map-route-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:7px;text-decoration:none;transition:all .15s;}
+.map-route-btn:hover{border-color:var(--sky);background:var(--sky-l);}
+.map-route-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.map-route-name{font-size:13px;font-weight:500;color:var(--text);}
+.map-route-stops{font-size:11px;color:var(--muted);margin-top:1px;}
+
+/* ── BOSTON ── */
+.boston-intro{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:14px;padding:18px;color:white;margin-bottom:14px;}
+.boston-intro h3{font-family:'Fraunces',serif;font-size:19px;font-weight:500;margin-bottom:7px;}
+.boston-intro p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.7;}
+.briefing-card{background:white;border:1px solid var(--border);border-radius:14px;margin-bottom:9px;overflow:hidden;transition:box-shadow .15s;}
+.briefing-card:hover{box-shadow:0 3px 10px rgba(0,0,0,.05);}
+.briefing-hdr{padding:13px 15px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:background .12s;}
+.briefing-hdr:hover{background:var(--bg);}
+.briefing-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.briefing-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px;}
+.briefing-type{font-size:11px;color:var(--muted);}
+.briefing-body{display:none;padding:0 15px 15px;border-top:1px solid var(--border);}
+.briefing-card.open .briefing-body{display:block;animation:fadeIn .2s ease both;}
+.briefing-sl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:11px 0 4px;}
+.briefing-txt{font-size:13px;color:#475569;line-height:1.7;}
+.briefing-ask{background:var(--orange-l);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:9px 11px;margin-top:9px;font-size:12px;color:#7c3412;line-height:1.65;}
+.briefing-ask strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;color:var(--orange);}
+</style>
+</head>
+<body>
+<!-- ═══ PROFILE ═══ -->
+<div id="profile-screen">
+  <div class="ps-hero">
+    <div class="ps-pill"><span>Latam Health Champions</span><div class="dot"></div><span>Boston 2026</span></div>
+    <div class="ps-title">Bienvenidos a la<br><em>Misión Boston</em><br><span style="font-size:18px;font-weight:300;opacity:.7">Latam Health Champions 2026</span></div>
+    <div class="ps-sub" id="ps-sub">Selecciona tu nombre para personalizar tu experiencia en la misión</div>
+  </div>
+  <div class="ps-body">
+    <div class="ps-groups" id="ps-groups"></div>
+    <div class="ps-preview" id="ps-preview">
+      <div class="ps-preview-av" id="ps-preview-av"></div>
+      <div>
+        <div class="ps-preview-name" id="ps-preview-name"></div>
+        <div class="ps-preview-role" id="ps-preview-role"></div>
+      </div>
+    </div>
+    <button class="ps-confirm-btn" id="ps-confirm-btn" onclick="confirmProfile()">
+      Ingresar a la misión →
+    </button>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+  <div class="app-hdr">
+    <div class="app-hdr-top">
+      <div style="display:flex;align-items:center;">
+        <div class="app-mark">L</div>
+        <div class="app-titles"><div class="app-t">LHC Boston 2026</div><div class="app-s">Apr 21–24 · Cambridge, MA</div></div>
+      </div>
+      <div class="profile-chip" onclick="resetProfile()">
+        <div class="chip-av" id="chip-av"></div>
+        <div class="chip-nm" id="chip-nm"></div>
+      </div>
+    </div>
+    <nav class="app-nav" id="app-nav">
+      <div class="nav-btn active" onclick="showView('inicio',this)" id="nb-inicio">Inicio</div>
+      <div class="nav-btn" onclick="showView('agenda',this)" id="nb-agenda">Agenda</div>
+      <div class="nav-btn" onclick="showView('lugares',this)" id="nb-lugares">Lugares</div>
+      <div class="nav-btn" onclick="showView('viaje',this)" id="nb-viaje">Mi Viaje</div>
+      <div class="nav-btn" onclick="showView('mapa',this)" id="nb-mapa">Mapa</div>
+      <div class="nav-btn" onclick="showView('delegacion',this)" id="nb-del">Delegación</div>
+      <div class="nav-btn" onclick="showView('faq',this)" id="nb-faq">FAQ</div>
+      <div class="nav-btn" onclick="showView('boston',this)" id="nb-bos">Boston</div>
+    </nav>
+  </div>
+  <div id="view-inicio"    class="view active"></div>
+  <div id="view-agenda"    class="view"></div>
+  <div id="view-lugares"   class="view"></div>
+  <div id="view-viaje"     class="view"></div>
+  <div id="view-mapa"      class="view"></div>
+  <div id="view-delegacion"class="view"></div>
+  <div id="view-faq"       class="view"></div>
+  <div id="view-boston"    class="view"></div>
+</div>
+
+<script>
+// ════════ I18N ════════
+const STRINGS = {
+  es:{
+    search:'Selecciona tu nombre para personalizar tu experiencia en la misión',
+    placeholder:'Escribe tu nombre...',
+    inicio:'Inicio',agenda:'Agenda',lugares:'Lugares',viaje:'Mi Viaje',
+    mapa:'Mapa',del:'Delegación',faq:'FAQ',boston:'Boston',
+    vtitle_inicio:'Inicio',vtitle_agenda:'Agenda',vtitle_lugares:'Lugares',
+    vtitle_viaje:'Mi Viaje',vtitle_mapa:'Mapa de la Misión',
+    vtitle_del:'Delegación',vtitle_faq:'FAQ Logística',vtitle_bos:'Boston',
+    vsub_viaje:'Vuelos e información de traslados',
+    confirmed:'Confirmado',pending:'Pendiente',transfer:'Traslado',coms:'Coms',optional:'Opcional',
+    walk:'caminando',uber:'Uber',maps:'Abrir en Google Maps',
+    arr_hdr:'▼  LLEGADA A BOSTON',dep_hdr:'▲  SALIDA DE BOSTON',
+    arrives:'Llega BOS',departs:'Sale BOS',terminal:'Terminal',
+    hotel_lbl:'Hotel',contact:'Coordinación',
+    pickup_lbl:'TRASLADOS EN BOSTON',
+    arr_pickup:'Llegada — quién te recoge',dep_pickup:'Salida — cómo vas al aeropuerto',
+    trail_btn:'Las 13 paradas del Trail',
+    today_prefix:'Hoy — ',preview_prefix:'Programa · ',
+    see_full:'Ver agenda completa →',
+    about_title:'¿Qué es Latam Health Champions?',
+    about_body:'Programa regional que identifica y proyecta las soluciones de innovación en salud más prometedoras de América Latina. En su edición 2026, 234 iniciativas de 11 países compitieron por llegar a esta misión en Boston — la capital mundial de la innovación en salud.',
+    map_open:'🗺️  Abrir mapa interactivo en nueva ventana',
+    map_routes:'Rutas por día en Google Maps',
+    champions:'Champions',org:'Organización',press:'Prensa',all:'Todos',
+    briefing_what:'Qué es',briefing_why:'Por qué lo visitan',briefing_ask:'Preguntas clave',
+    briefing_context:'Contexto',briefing_mission:'Por qué importa para la misión',briefing_carry:'Preguntas para llevar',
+  },
+  pt:{
+    search:'Busque seu nome para personalizar sua experiência',
+    placeholder:'Digite seu nome...',
+    inicio:'Início',agenda:'Agenda',lugares:'Locais',viaje:'Minha Viagem',
+    mapa:'Mapa',del:'Delegação',faq:'FAQ',boston:'Boston',
+    vtitle_inicio:'Início',vtitle_agenda:'Agenda',vtitle_lugares:'Locais',
+    vtitle_viaje:'Minha Viagem',vtitle_mapa:'Mapa da Missão',
+    vtitle_del:'Delegação',vtitle_faq:'FAQ Logística',vtitle_bos:'Boston',
+    vsub_viaje:'Voos e informações de traslados',
+    confirmed:'Confirmado',pending:'Pendente',transfer:'Traslado',coms:'Coms',optional:'Opcional',
+    walk:'caminhando',uber:'Uber',maps:'Abrir no Google Maps',
+    arr_hdr:'▼  CHEGADA A BOSTON',dep_hdr:'▲  SAÍDA DE BOSTON',
+    arrives:'Chega BOS',departs:'Sai BOS',terminal:'Terminal',
+    hotel_lbl:'Hotel',contact:'Coordenação',
+    pickup_lbl:'TRASLADOS EM BOSTON',
+    arr_pickup:'Chegada — quem te recebe',dep_pickup:'Saída — como vai ao aeroporto',
+    trail_btn:'As 13 paradas do Trail',
+    today_prefix:'Hoje — ',preview_prefix:'Programa · ',
+    see_full:'Ver agenda completa →',
+    about_title:'O que é Latam Health Champions?',
+    about_body:'Programa regional que identifica e projeta as soluções de inovação em saúde mais promissoras da América Latina. Na edição 2026, 234 iniciativas de 11 países competiram para chegar a esta missão em Boston.',
+    map_open:'🗺️  Abrir mapa interativo em nova janela',
+    map_routes:'Rotas por dia no Google Maps',
+    champions:'Champions',org:'Organização',press:'Imprensa',all:'Todos',
+    briefing_what:'O que é',briefing_why:'Por que visitam',briefing_ask:'Perguntas-chave',
+    briefing_context:'Contexto',briefing_mission:'Por que importa para a missão',briefing_carry:'Perguntas para levar',
+  }
+};
+let LANG = 'es';
+function t(k){ return (STRINGS[LANG]||STRINGS.es)[k] || STRINGS.es[k] || k; }
+
+// ════════ DATA ════════
+const PEOPLE = [
+  {id:'luisjose',    name:'Luis José Aragón Yanes',       flag:'🇬🇹',role:'Champion – PREMIA',                group:'champion',color:'#1d4ed8',persona:'champion',departsFri:false},
+  {id:'pablo',       name:'Pablo Aguirre Zavala',          flag:'🇲🇽',role:'Champion – Meddi',                 group:'champion',color:'#1d4ed8',persona:'champion',departsFri:false},
+  {id:'sergio',      name:'Sergio Iván Prada Ríos',        flag:'🇨🇴',role:'Champion – SkinGO',                group:'champion',color:'#1d4ed8',persona:'champion',departsFri:false},
+  {id:'luisfernando',name:'Luis Fernando García',           flag:'🇨🇴',role:'Champion – Disp. Reexp. Pulmonar', group:'champion',color:'#1d4ed8',persona:'champion',departsFri:false},
+  {id:'caroline',    name:'Caroline Lopes de Souza',       flag:'🇧🇷',role:'Champion – Neomed',                group:'champion',color:'#1d4ed8',persona:'champion',departsFri:false,lang:'pt'},
+  {id:'lenin',       name:'Lenin Vladimir Rueda Torres',   flag:'🇵🇪',role:'Champion – Potabilización Arsénico',group:'champion',color:'#1d4ed8',persona:'champion',departsFri:false},
+  {id:'mariacristina',name:'María Cristina Paredes',       flag:'🇨🇱',role:'Champion – COPESILCUP',            group:'champion',color:'#1d4ed8',persona:'champion',departsFri:false},
+  {id:'hugo',        name:'Hugo César Gramajo',            flag:'🇦🇷',role:'Champion – Exomas',                group:'champion',color:'#1d4ed8',persona:'champion',departsFri:false},
+  {id:'carlos',      name:'Carlos Felipe Escobar',         flag:'🇨🇴',role:'Director – INNOS',                 group:'innos',   color:'#0C1E35',persona:'org',     departsFri:false},
+  {id:'juancarlos',  name:'Juan Carlos Suárez',            flag:'🇨🇴',role:'Dir. PI – INNOS',                  group:'innos',   color:'#0C1E35',persona:'org',     departsFri:false},
+  {id:'brandon',     name:'Brandon Hernández',              flag:'🇨🇴',role:'Equipo INNOS',                     group:'innos',   color:'#0C1E35',persona:'org',     departsFri:false,fullDayFri:true,phone:'+573205988934'},
+  {id:'raquel',      name:'Raquel Sorza Ocaña',            flag:'🇨🇴',role:'Dir. Operaciones – FIFARMA',       group:'fifarma', color:'#0369A1',persona:'org',     departsFri:false},
+  {id:'luciaperez',  name:'Lucía Pérez',                   flag:'🇪🇨',   role:'Gerente Comunicaciones – FIFARMA', group:'fifarma', color:'#0369A1',persona:'org',     departsFri:false},
+  {id:'mikaela',     name:'Mikaela Arévalo',               flag:'🇪🇨',role:'Gerente Comunidad – FIFARMA',      group:'fifarma', color:'#0369A1',persona:'org',     departsFri:false},
+  {id:'luciasalcedo',name:'Lucía Salcedo',                 flag:'🇲🇽',role:'AMIIF – Organización',             group:'fifarma', color:'#0369A1',persona:'press',   departsFri:true},
+  {id:'debora',      name:'Débora Judith Slotnisky',       flag:'🇦🇷',role:'Periodista',                       group:'press',   color:'#7C3AED',persona:'press',   departsFri:true},
+  {id:'isaac',       name:'Isaac Leonardo Torres Cruz',    flag:'🇲🇽',role:'Periodista',                       group:'press',   color:'#7C3AED',persona:'press',   departsFri:true},
+];
+
+const PERSONAS_GROUPS = [
+  {label:'Champions LHC 2026',       ids:['luisjose','pablo','sergio','luisfernando','caroline','lenin','mariacristina','hugo']},
+  {label:'Organización · INNOS & FIFARMA', ids:['carlos','juancarlos','brandon','raquel','luciaperez','mikaela','luciasalcedo']},
+  {label:'Prensa',                   ids:['debora','isaac']},
+];
+
+const VM = {
+  hotel:     'https://maps.app.goo.gl/HeEbgYnfeBgPpBqS7',
+  catalyst:  'https://maps.app.goo.gl/RsZa4SHtajhQiqrQ6',
+  irish:     'https://maps.app.goo.gl/kM2vo3pAYe3LP3bRA',
+  naco:      'https://maps.app.goo.gl/qsxy6AQDZAqzGWyi7',
+  mit:       'https://maps.app.goo.gl/c9tfwUUUJG9zyfvq9',
+  engine:    'https://maps.app.goo.gl/jwfYX98ccGgcQnH48',
+  flagship:  'https://maps.app.goo.gl/x2Cv2ff4U82EE1pt6',
+  amgen:     'https://maps.app.goo.gl/dTURDA33VC3X6kWo9',
+  mgb:       'https://www.google.com/maps/search/?api=1&query=Mass+General+Hospital+55+Fruit+St+Boston',
+  harvard:   'https://www.google.com/maps/search/?api=1&query=Harvard+Innovation+Labs+125+Western+Ave+Allston',
+  cic:       'https://www.google.com/maps/search/?api=1&query=Cambridge+Innovation+Center+245+Main+St+Cambridge',
+  labcentral:'https://www.google.com/maps/search/?api=1&query=LabCentral+700+Main+St+Cambridge',
+  fogo:      'https://www.google.com/maps/search/?api=1&query=Fogo+de+Chao+200+Dartmouth+St+Boston',
+  bos:       'https://www.google.com/maps/search/?api=1&query=Boston+Logan+Airport',
+};
+const gmaps = (k,a) => (k && VM[k]) ? VM[k] : (a ? 'https://maps.google.com/?q='+encodeURIComponent(a) : null);
+const mBtn = (k,a,l) => { const u=gmaps(k,a); return u?`<a class="maps-btn" href="${u}" target="_blank">📍 ${l||t('maps')}</a>`:''; };
+
+// Transfer info per person
+const TRANSFERS = {
+  carlos:      {arrDriver:'Nadie de la delegación',arrNote:'Llegas el sáb 18, 2 días antes. Toma taxi o Uber desde BOS (~$40, ~20 min).',arrWith:'',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado por el evento.',depWith:'Raquel Sorza · Sergio Prada',depLeave:'~07:00'},
+  brandon:     {arrDriver:'Llegas solo (primer miembro del equipo)',arrNote:'Toma Uber desde BOS (~$40, ~20 min). Es el domingo 19.',arrWith:'',
+                depDriver:'Uber propio',depNote:'Vuelo a las 19:00. Salida del hotel ~17:00. Uber pagado.',depWith:'',depLeave:'~17:00'},
+  juancarlos:  {arrDriver:'Brandon Hernández',arrNote:'Vuelo CM704, llega 14:31.',arrWith:'Lucía Pérez · Mikaela Arévalo',
+                depDriver:'Solo',depNote:'Vuelo el domingo 26. Salida hotel ~13:30.',depWith:'',depLeave:'~12:45'},
+  luciaperez:  {arrDriver:'Brandon Hernández',arrNote:'Vuelo CM704, llega 14:31.',arrWith:'Juan Carlos Suárez · Mikaela Arévalo',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado.',depWith:'María Cristina Paredes · Mikaela Arévalo',depLeave:'~05:45'},
+  mikaela:     {arrDriver:'Brandon Hernández',arrNote:'Vuelo CM704, llega 14:31.',arrWith:'Juan Carlos Suárez · Lucía Pérez',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado.',depWith:'Lucía Pérez · María Cristina Paredes',depLeave:'~05:45'},
+  raquel:      {arrDriver:'Brandon Hernández',arrNote:'Vuelo AV222, llega 07:15.',arrWith:'Sergio Prada',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado.',depWith:'Sergio Prada · Carlos Felipe Escobar',depLeave:'~07:00'},
+  sergio:      {arrDriver:'Brandon Hernández',arrNote:'Vuelo AV222, llega 07:15.',arrWith:'Raquel Sorza',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado.',depWith:'Raquel Sorza · Carlos Felipe Escobar',depLeave:'~07:00'},
+  luisjose:    {arrDriver:'Brandon Hernández',arrNote:'Vuelo CM704, llega 14:31.',arrWith:'Luis Fernando García · Lenin Rueda',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado.',depWith:'Lenin Rueda · Luis Fernando García',depLeave:'~13:05'},
+  luisfernando:{arrDriver:'Brandon Hernández',arrNote:'Vuelo CM704, llega 14:31.',arrWith:'Luis José Aragón · Lenin Rueda',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado.',depWith:'Lenin Rueda · Luis José Aragón',depLeave:'~13:05'},
+  caroline:    {arrDriver:'Brandon Hernández',arrNote:'Conexão JFK–BOS, chega 11:15.',arrWith:'Hugo Gramajo',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pago pelo evento.',depWith:'Pablo Aguirre Zavala',depLeave:'~14:05'},
+  lenin:       {arrDriver:'Brandon Hernández',arrNote:'Vuelo CM704, llega 14:31.',arrWith:'Luis Fernando García · Luis José Aragón',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado.',depWith:'Luis José Aragón · Luis Fernando García',depLeave:'~14:00'},
+  mariacristina:{arrDriver:'Juan Carlos Suárez',arrNote:'Vuelo CM704, llega 14:31.',arrWith:'Débora Slotnisky',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado.',depWith:'Lucía Pérez · Mikaela Arévalo',depLeave:'~05:45'},
+  hugo:        {arrDriver:'Brandon Hernández',arrNote:'Vuelo JFK–BOS, llega 11:15.',arrWith:'Caroline Lopes',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado. Sale solo.',depWith:'',depLeave:'~09:25'},
+  pablo:       {arrDriver:'Brandon Hernández',arrNote:'Vuelo DL726, llega 16:20.',arrWith:'Isaac Torres · Lucía Salcedo',
+                depDriver:'Juan Carlos Suárez',depNote:'Uber pagado.',depWith:'Caroline Lopes de Souza',depLeave:'~13:30'},
+  debora:      {arrDriver:'Juan Carlos Suárez',arrNote:'Vuelo CM704, llega 14:31.',arrWith:'María Cristina Paredes',
+                depDriver:'Uber pagado',depNote:'Salida viernes. Sale sola.',depWith:'',depLeave:'~15:30'},
+  isaac:       {arrDriver:'Brandon Hernández',arrNote:'Vuelo DL726, llega 16:20.',arrWith:'Pablo Aguirre · Lucía Salcedo',
+                depDriver:'Uber pagado',depNote:'Salida viernes.',depWith:'Lucía Salcedo',depLeave:'~13:00'},
+  luciasalcedo:{arrDriver:'Brandon Hernández',arrNote:'Vuelo DL726, llega 16:20.',arrWith:'Pablo Aguirre · Isaac Torres',
+                depDriver:'Uber pagado',depNote:'Salida viernes.',depWith:'Isaac Torres',depLeave:'~13:00'},
+};
+
+// hotel: {checkin, checkout, nights}
+// arr/dep: array of legs [{from, dep, to, arr, fl, date, note?}]
+// depLeave: hora sugerida de salida del hotel (3h antes del vuelo)
+const FLIGHTS = {
+  carlos:       {hotel:{checkin:'Sáb 18 Abr',checkout:'Sáb 25 Abr',nights:7}, depLeave:'06:00',
+    arr:[{date:'Vie 17 Abr',from:'BOG',dep:'23:55',to:'BOS',arr:'07:15',fl:'AV 222',note:'(+1 día) Directo 6h 20m'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'09:00',to:'BOG',arr:'14:10',fl:'AV 227',note:'Directo 6h 10m'}]},
+
+  brandon:      {hotel:{checkin:'Dom 19 Abr',checkout:'Vie 24 Abr',nights:5}, depLeave:'16:00',
+    arr:[{date:'Dom 19 Abr',from:'BOG',dep:'04:59',to:'PTY',arr:'06:48',fl:'CM 837'},
+         {date:'Dom 19 Abr',from:'PTY',dep:'07:52',to:'BOS',arr:'14:31',fl:'CM 704',note:'Terminal E'}],
+    dep:[{date:'Vie 24 Abr',from:'BOS',dep:'19:00',to:'BOG',arr:'—',fl:'Por confirmar',note:'Vuelo pendiente confirmar'}]},
+
+  juancarlos:   {hotel:{checkin:'Lun 20 Abr',checkout:'Dom 26 Abr',nights:6}, depLeave:'12:45',
+    arr:[{date:'Lun 20 Abr',from:'BOG',dep:'04:59',to:'PTY',arr:'06:48',fl:'CM 837'},
+         {date:'Lun 20 Abr',from:'PTY',dep:'07:52',to:'BOS',arr:'14:31',fl:'CM 704',note:'Terminal E'}],
+    dep:[{date:'Dom 26 Abr',from:'BOS',dep:'15:46',to:'PTY',arr:'20:41',fl:'CM 705'},
+         {date:'Dom 26 Abr',from:'PTY',dep:'22:43',to:'BOG',arr:'00:22',fl:'CM 860',note:'(+1 día)'}]},
+
+  luciaperez:   {hotel:{checkin:'Lun 20 Abr',checkout:'Sáb 25 Abr',nights:5}, depLeave:'05:45',
+    arr:[{date:'Lun 20 Abr',from:'UIO',dep:'03:08',to:'PTY',arr:'05:05',fl:'CM 153'},
+         {date:'Lun 20 Abr',from:'PTY',dep:'07:52',to:'BOS',arr:'14:31',fl:'CM 704',note:'Terminal E'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'08:43',to:'PTY',arr:'13:33',fl:'CM 312'},
+         {date:'Sáb 25 Abr',from:'PTY',dep:'15:29',to:'UIO',arr:'17:32',fl:'CM 159'}]},
+
+  mikaela:      {hotel:{checkin:'Lun 20 Abr',checkout:'Sáb 25 Abr',nights:5}, depLeave:'05:45',
+    arr:[{date:'Lun 20 Abr',from:'UIO',dep:'03:08',to:'PTY',arr:'05:05',fl:'CM 153'},
+         {date:'Lun 20 Abr',from:'PTY',dep:'07:52',to:'BOS',arr:'14:31',fl:'CM 704',note:'Terminal E'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'08:43',to:'PTY',arr:'13:33',fl:'CM 312'},
+         {date:'Sáb 25 Abr',from:'PTY',dep:'15:29',to:'UIO',arr:'17:32',fl:'CM 159'}]},
+
+  raquel:       {hotel:{checkin:'Mar 21 Abr',checkout:'Sáb 25 Abr',nights:4}, depLeave:'06:00',
+    arr:[{date:'Mar 21 Abr',from:'BOG',dep:'23:55',to:'BOS',arr:'07:15',fl:'AV 222',note:'(+1 día — sale lun 20) Terminal E'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'09:00',to:'BOG',arr:'14:10',fl:'AV 227'}]},
+
+  sergio:       {hotel:{checkin:'Mar 21 Abr',checkout:'Sáb 25 Abr',nights:4}, depLeave:'05:45',
+    arr:[{date:'Lun 20 Abr',from:'CLO',dep:'21:20',to:'BOG',arr:'22:20',fl:'AV 9568'},
+         {date:'Mar 21 Abr',from:'BOG',dep:'23:55',to:'BOS',arr:'07:15',fl:'AV 222',note:'(+1 día) Terminal E'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'08:45',to:'BOG',arr:'13:55',fl:'AV 227'},
+         {date:'Sáb 25 Abr',from:'BOG',dep:'16:35',to:'CLO',arr:'17:45',fl:'AV 9527'}]},
+
+  luisjose:     {hotel:{checkin:'Mar 21 Abr',checkout:'Sáb 25 Abr',nights:4}, depLeave:'13:05',
+    arr:[{date:'Mar 21 Abr',from:'GUA',dep:'02:31',to:'PTY',arr:'05:55',fl:'CM 183'},
+         {date:'Mar 21 Abr',from:'PTY',dep:'07:52',to:'BOS',arr:'14:31',fl:'CM 704',note:'Terminal E'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'16:05',to:'PTY',arr:'20:41',fl:'CM 705'},
+         {date:'Sáb 25 Abr',from:'PTY',dep:'21:21',to:'GUA',arr:'22:44',fl:'CM 496'}]},
+
+  pablo:        {hotel:{checkin:'Mar 21 Abr',checkout:'Sáb 25 Abr',nights:4}, depLeave:'13:30',
+    arr:[{date:'Mar 21 Abr',from:'MEX',dep:'07:05',to:'ATL',arr:'12:20',fl:'DL 590'},
+         {date:'Mar 21 Abr',from:'ATL',dep:'13:45',to:'BOS',arr:'16:20',fl:'DL 726',note:'Terminal A'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'16:30',to:'ATL',arr:'19:27',fl:'AM 3168'},
+         {date:'Sáb 25 Abr',from:'ATL',dep:'20:07',to:'MEX',arr:'21:50',fl:'AM 3409'}]},
+
+  luisfernando: {hotel:{checkin:'Mar 21 Abr',checkout:'Sáb 25 Abr',nights:4}, depLeave:'13:05',
+    arr:[{date:'Mar 21 Abr',from:'BOG',dep:'04:59',to:'PTY',arr:'06:48',fl:'CM 837'},
+         {date:'Mar 21 Abr',from:'PTY',dep:'07:52',to:'BOS',arr:'14:31',fl:'CM 704',note:'Terminal E'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'16:05',to:'PTY',arr:'20:41',fl:'CM 705'},
+         {date:'Sáb 25 Abr',from:'PTY',dep:'21:16',to:'BOG',arr:'22:55',fl:'CM 876'}]},
+
+  caroline:     {hotel:{checkin:'Mar 21 Abr',checkout:'Sáb 25 Abr',nights:4}, depLeave:'14:05',
+    arr:[{date:'Lun 20 Abr',from:'GRU',dep:'22:50',to:'JFK',arr:'07:40',fl:'LA 8180/JJ',note:'(+1 día)'},
+         {date:'Mar 21 Abr',from:'JFK',dep:'09:49',to:'BOS',arr:'11:15',fl:'LA 6639/DL',note:'Terminal A'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'17:08',to:'JFK',arr:'18:45',fl:'LA 6175'},
+         {date:'Sáb 25 Abr',from:'JFK',dep:'20:30',to:'GRU',arr:'07:05',fl:'LA 8181',note:'(+1 día)'}]},
+
+  lenin:        {hotel:{checkin:'Mar 21 Abr',checkout:'Sáb 25 Abr',nights:4}, depLeave:'13:05',
+    arr:[{date:'Mar 21 Abr',from:'LIM',dep:'02:35',to:'PTY',arr:'06:10',fl:'CM 264'},
+         {date:'Mar 21 Abr',from:'PTY',dep:'07:52',to:'BOS',arr:'14:31',fl:'CM 704',note:'Terminal E'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'16:05',to:'PTY',arr:'20:41',fl:'CM 705'},
+         {date:'Sáb 25 Abr',from:'PTY',dep:'21:43',to:'LIM',arr:'01:20',fl:'CM 263',note:'(+1 día)'}]},
+
+  mariacristina:{hotel:{checkin:'Mar 21 Abr',checkout:'Sáb 25 Abr',nights:4}, depLeave:'05:45',
+    arr:[{date:'Mar 21 Abr',from:'SCL',dep:'00:46',to:'PTY',arr:'06:32',fl:'CM 118'},
+         {date:'Mar 21 Abr',from:'PTY',dep:'07:52',to:'BOS',arr:'14:31',fl:'CM 704',note:'Terminal E'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'08:43',to:'PTY',arr:'13:33',fl:'CM 312'},
+         {date:'Sáb 25 Abr',from:'PTY',dep:'15:08',to:'SCL',arr:'22:43',fl:'CM 497'}]},
+
+  hugo:         {hotel:{checkin:'Mar 21 Abr',checkout:'Sáb 25 Abr',nights:4}, depLeave:'09:25',
+    arr:[{date:'Lun 20 Abr',from:'ROS',dep:'12:10',to:'GRU',arr:'15:00',fl:'DL 6353'},
+         {date:'Lun 20 Abr',from:'GRU',dep:'22:50',to:'JFK',arr:'07:40',fl:'DL 6050',note:'(+1 día)'},
+         {date:'Mar 21 Abr',from:'JFK',dep:'09:49',to:'BOS',arr:'11:15',fl:'DL 5733',note:'Terminal A'}],
+    dep:[{date:'Sáb 25 Abr',from:'BOS',dep:'12:25',to:'MIA',arr:'15:55',fl:'DL 1649'}]},
+
+  debora:       {hotel:{checkin:'Mar 21 Abr',checkout:'Vie 24 Abr',nights:3}, depLeave:'14:30',
+    arr:[{date:'Mar 21 Abr',from:'EZE',dep:'00:14',to:'PTY',arr:'05:32',fl:'CM 439'},
+         {date:'Mar 21 Abr',from:'PTY',dep:'07:52',to:'BOS',arr:'14:31',fl:'CM 704',note:'Terminal E'}],
+    dep:[{date:'Vie 24 Abr',from:'BOS',dep:'17:30',to:'ATL',arr:'20:35',fl:'DL 476'},
+         {date:'Vie 24 Abr',from:'ATL',dep:'23:00',to:'EZE',arr:'09:45',fl:'LA 8873',note:'(+1 día)'}]},
+
+  isaac:        {hotel:{checkin:'Mar 21 Abr',checkout:'Vie 24 Abr',nights:3}, depLeave:'13:00',
+    arr:[{date:'Mar 21 Abr',from:'MEX',dep:'07:05',to:'ATL',arr:'12:20',fl:'DL 590'},
+         {date:'Mar 21 Abr',from:'ATL',dep:'13:45',to:'BOS',arr:'16:20',fl:'DL 726',note:'Terminal A'}],
+    dep:[{date:'Vie 24 Abr',from:'BOS',dep:'16:00',to:'ATL',arr:'18:54',fl:'AM 3730'},
+         {date:'Vie 24 Abr',from:'ATL',dep:'20:07',to:'MEX',arr:'21:50',fl:'AM 3409'}]},
+
+  luciasalcedo: {hotel:{checkin:'Mar 21 Abr',checkout:'Vie 24 Abr',nights:3}, depLeave:'13:00',
+    arr:[{date:'Mar 21 Abr',from:'MEX',dep:'07:05',to:'ATL',arr:'12:20',fl:'DL 590'},
+         {date:'Mar 21 Abr',from:'ATL',dep:'13:45',to:'BOS',arr:'16:20',fl:'DL 726',note:'Terminal A'}],
+    dep:[{date:'Vie 24 Abr',from:'BOS',dep:'16:00',to:'ATL',arr:'18:54',fl:'AM 3730',note:'Continúa a MEX'}]},
+};
+
+const AGENDA = {
+  1:{label:'Day 1 · Martes 21 Abr',title:'Llegadas y Bienvenida',sub:'Arrival day — Cena en Catalyst Restaurant',
+    events:[
+      {time:'6AM–4PM',title:'Llegada de participantes y check-in',type:'main',status:'confirmed',track:'both',transport:'none',location:'Le Méridien Cambridge',addr:'20 Sidney St, Cambridge, MA 02139',mk:'hotel',detail:'Bienvenidos a Boston. Los traslados del aeropuerto al hotel están cubiertos. Check-in a partir de las 3:00 PM.'},
+      {time:'7–9 PM',title:'Cena de bienvenida y presentación del programa',type:'main',status:'confirmed',track:'both',transport:'walk',walkMin:10,location:'Catalyst Restaurant',addr:'300 Technology Square, Cambridge, MA 02139',mk:'catalyst',detail:'Cena oficial de bienvenida en Catalyst Restaurant, restaurante icónico del ecosistema Kendall. Presentación del programa de la misión. Dress code: smart casual.'},
+    ]},
+  2:{label:'Day 2 · Miércoles 22 Abr',title:'Healthcare Innovation Trail',sub:'Recorrido por el ecosistema · MIT · The Engine',
+    events:[
+      {time:'6–7:30 AM',title:'Desayuno en el hotel',type:'main',status:'confirmed',track:'both',transport:'none',location:'Le Méridien Cambridge',mk:'hotel',detail:'Desayuno incluido. Punto de encuentro en el lobby a las 7:30 AM.'},
+      {time:'7:30–8 AM',title:'Traslado → Irish Famine Memorial',type:'transfer',status:'confirmed',track:'both',transport:'uber',location:'Irish Famine Memorial',addr:'30 School St, Boston, MA 02108',mk:'irish',detail:'Uber al punto de encuentro del Healthcare Innovation Trail, en Downtown Boston (~15 min, ~3 millas desde el hotel).'},
+      {time:'8–9 AM',title:'Coms: entrevistas y contenido',type:'coms',status:'confirmed',track:'both',transport:'none',location:'Irish Famine Memorial',mk:'irish',detail:'Grabación de entrevistas con Champions y participantes. Video y citas para prensa. Coordinado por FIFARMA.'},
+      {time:'9 AM–12 PM',title:'Healthcare Innovation Trail',type:'main',status:'confirmed',track:'both',transport:'walk',location:'Boston / Cambridge',mk:'irish',detail:'Recorrido guiado por el ecosistema de innovación en salud de Boston y Kendall Square. 13 paradas.',hasTrail:true},
+      {time:'12–1 PM',title:'Almuerzo',type:'main',status:'confirmed',track:'both',transport:'walk',walkMin:5,location:'Naco Taco',addr:'297 Massachusetts Ave, Cambridge, MA 02139',mk:'naco',detail:'Almuerzo incluido.'},
+      {time:'1–1:30 PM',title:'Traslado → MIT',type:'transfer',status:'confirmed',track:'champions',transport:'walk',walkMin:15,location:'MIT Building E23',addr:'25 Carleton St, Cambridge, MA',mk:'mit',detail:'Caminata al MIT (~15 min).'},
+      {time:'1:30–3 PM',title:'MIT – Conversación con Dr. Freddy Nguyen',type:'main',status:'confirmed',track:'champions',transport:'none',location:'MIT Building E23',addr:'25 Carleton St, Cambridge, MA',mk:'mit',detail:'Physician-Scientist Fellow del MIT y Director del MIT Catalyst Scholars Program. Fundador de Nine Diagnostics. Medicina de precisión funcional mediante fotónica y nanotecnología.'},
+      {time:'3–4 PM',title:'Coms: grabación y contenido',type:'coms',status:'confirmed',track:'both',transport:'none',location:'MIT',mk:'mit',detail:'Grabación de entrevistas y producción de contenido.'},
+      {time:'4–4:15 PM',title:'Traslado → The Engine',type:'transfer',status:'confirmed',track:'champions',transport:'walk',walkMin:18,location:'The Engine (MIT)',addr:'750 Main St, Cambridge',mk:'engine',detail:'Caminata desde MIT (~18 min).'},
+      {time:'4:15–5:30 PM',title:'The Engine – Accelerating Tough Tech',type:'main',status:'pending',track:'champions',transport:'none',location:'The Engine (MIT)',addr:'750 Main St, Cambridge',mk:'engine',detail:'Aceleradora de MIT para tecnologías profundas que requieren >10 años de I+D. Financia lo que el mercado convencional no puede: biotech avanzada, energía nuclear, materiales de frontera. Pendiente de confirmar.'},
+      {time:'5:30–6 PM',title:'Regreso al hotel',type:'transfer',status:'confirmed',track:'both',transport:'walk',walkMin:20,location:'Le Méridien Cambridge',mk:'hotel',detail:'Caminata de regreso (~20 min).'},
+    ]},
+  3:{label:'Day 3 · Jueves 23 Abr',title:'MGB · Flagship · Amgen · Harvard i-lab',sub:'Del laboratorio al mercado',
+    events:[
+      {time:'6–7:30 AM',title:'Desayuno en el hotel',type:'main',status:'confirmed',track:'both',transport:'none',location:'Le Méridien Cambridge',mk:'hotel',detail:'Desayuno incluido. Lobby 7:30 AM.'},
+      {time:'7:30–8 AM',title:'Traslado → Mass General Brigham',type:'transfer',status:'confirmed',track:'both',transport:'uber',location:'MGH – Austen 4-402',addr:'55 Fruit St, Boston, MA',mk:'mgb',detail:'Uber al campus del MGH (~15 min).'},
+      {time:'8:30–9:30 AM',title:'Mass General Brigham – How Innovation Happens at MGB',type:'main',status:'pending',track:'both',transport:'none',location:'MGH – Austen 4-402',mk:'mgb',detail:'El hospital universitario más influyente del mundo (afiliado a Harvard). Primera cirugía con anestesia en 1846. Sesión sobre la ruta interna de innovación: de la observación clínica a la empresa. Pendiente de confirmar.'},
+      {time:'9:30–10 AM',title:'Traslado → Flagship Pioneering',type:'transfer',status:'confirmed',track:'both',transport:'walk',walkMin:20,location:'Flagship Pioneering',mk:'flagship',detail:'Caminata cruzando el río Charles (~20 min).'},
+      {time:'10–11 AM',title:'Flagship Pioneering Session',type:'main',status:'confirmed',track:'both',transport:'none',location:'Flagship Pioneering',addr:'55 Cambridge Pkwy, Cambridge',mk:'flagship',detail:'La firma que fundó Moderna antes de que existiera. No es VC: genera hipótesis científicas y construye empresas desde cero. +100 compañías, valor total +$200B.'},
+      {time:'11–11:30 AM',title:'Traslado → Amgen',type:'transfer',status:'confirmed',track:'both',transport:'walk',walkMin:12,location:'Amgen Cambridge',mk:'amgen',detail:'Caminata por Kendall Square (~12 min).'},
+      {time:'11:30 AM–3 PM',title:'Visita Amgen',type:'main',status:'confirmed',track:'both',transport:'none',location:'Amgen Cambridge',addr:'360 Binney St, Cambridge',mk:'amgen',detail:'Campus de I+D de una de las biofarmacéuticas más grandes del mundo. Deliberadamente más ágil que su sede en California para conectar con el ecosistema Kendall.'},
+      {time:'3–3:30 PM',title:'Traslado → Harvard Innovation Labs',type:'transfer',status:'confirmed',track:'champions',transport:'uber',location:'Harvard i-lab – Batten Hall',addr:'125 Western Ave, Allston',mk:'harvard',detail:'Uber a Allston (~15 min).'},
+      {time:'3:30–5 PM',title:'Harvard Innovation Labs',type:'main',status:'pending',track:'champions',transport:'none',location:'Harvard i-lab – Batten Hall',mk:'harvard',detail:'Ecosistema de emprendimiento de Harvard: i-lab (estudiantes), Launch Lab X (alumni) y Life Lab (ciencias de la vida). +900 startups activas, +$1B de capital desplegado. Pendiente de confirmar.'},
+      {time:'5–6 PM',title:'Coms: grabación y contenido',type:'coms',status:'confirmed',track:'both',transport:'none',location:'Harvard i-lab / Hotel',detail:'Producción de contenido.'},
+      {time:'~6 PM',title:'Regreso al hotel',type:'transfer',status:'confirmed',track:'both',transport:'uber',location:'Le Méridien Cambridge',mk:'hotel',detail:'Uber de regreso desde Allston.'},
+      {time:'~6 PM (opcional)',title:'[OPCIONAL] The Future of Generative Media – Suno CEO',type:'optional',track:'press',transport:'none',location:'Harvard Innovation Labs',mk:'harvard',detail:'Mikey Shulman, co-fundador y CEO de Suno (IA para música). Recomendado para periodistas de tecnología.'},
+      {time:'Noche (opcional)',title:'[OPCIONAL] Roxanne Khamsi – Harvard Science Center',type:'optional',track:'champions',transport:'none',location:'Harvard Science Center',addr:'1 Oxford St, Cambridge',detail:'Periodista científica de renombre internacional. Para Champions interesados en comunicación de ciencia.'},
+      {time:'Noche (opcional)',title:'[OPCIONAL] Underscore VC Pitch Competition',type:'optional',track:'champions',transport:'none',location:'Underscore VC',addr:'Cambridge, MA',detail:'Competencia de pitches de startups. Ideal para Champions que quieran observar estándares de pitch ante inversores en EE.UU.'},
+    ]},
+  4:{label:'Day 4 · Viernes 24 Abr',title:'Scale UP · LabCentral · Farewell',sub:'Escalabilidad, financiación y regreso',
+    events:[
+      {time:'6–7:30 AM',title:'Desayuno en el hotel',type:'main',status:'confirmed',track:'both',transport:'none',location:'Le Méridien Cambridge',mk:'hotel',detail:'Último desayuno incluido. Recomendado hacer check-out en la mañana para quienes vuelan hoy.'},
+      {time:'7:30–9 AM',title:'Coms: sesión de grabación final',type:'coms',status:'confirmed',track:'both',transport:'none',location:'Le Méridien / alrededores',mk:'hotel',detail:'Grabación y producción de contenido. Ideal para check-out y preparar equipaje.',onlyFriLeave:true},
+      {time:'11 AM–12 PM',title:'Traslado → Fogo de Chão (con equipaje)',type:'transfer',status:'confirmed',track:'both',transport:'uber',location:'Fogo de Chão Boston',addr:'200 Dartmouth St, Boston',mk:'fogo',detail:'Traslado al almuerzo de cierre. Quienes vuelan hoy pueden ir directamente con su equipaje.',onlyFriLeave:true},
+      {time:'7:30–8 AM',title:'Traslado → CIC Scale UP',type:'transfer',status:'confirmed',track:'both',transport:'walk',walkMin:18,location:'CIC – Gooseberry, Piso 12',addr:'245 Main St, Cambridge',mk:'cic',detail:'Caminata al Cambridge Innovation Center (~18 min).',skipFriLeave:true},
+      {time:'8–9:30 AM',title:'Session Scale UP @ CIC',type:'main',status:'confirmed',track:'both',transport:'none',location:'CIC – Gooseberry, 12th Floor',mk:'cic',detail:'Escalabilidad, modelos de negocio y acceso a capital para innovadores en salud. Cambridge Innovation Center.',skipFriLeave:true},
+      {time:'9:30–10 AM',title:'Traslado → LabCentral',type:'transfer',status:'confirmed',track:'both',transport:'walk',walkMin:25,location:'LabCentral',addr:'700 Main St, Cambridge',mk:'labcentral',detail:'Caminata (~25 min).',skipFriLeave:true},
+      {time:'10–11 AM',title:'LabCentral Tour',type:'main',status:'confirmed',track:'both',transport:'none',location:'LabCentral',mk:'labcentral',detail:'Hub de biotech de Cambridge con laboratorios plug-and-play para startups. Residentes: Merck, Pfizer Innovation Labs y startups de 20+ países.',skipFriLeave:true},
+      {time:'11 AM–12 PM',title:'Coms: grabación final',type:'coms',status:'confirmed',track:'both',transport:'none',location:'LabCentral',mk:'labcentral',detail:'Último espacio de grabación de la misión.',skipFriLeave:true},
+      {time:'12–2 PM',title:'Almuerzo de cierre — Farewell Lunch',type:'main',status:'confirmed',track:'both',transport:'uber',location:'Fogo de Chão Boston',addr:'200 Dartmouth St, Boston',mk:'fogo',detail:'Almuerzo de cierre incluido en Fogo de Chão, Boston. Síntesis de aprendizajes y despedida de la misión.'},
+      {time:'2–4 PM',title:'Tiempo libre',type:'main',status:'confirmed',track:'both',transport:'none',location:'Boston / Cambridge',detail:'Tiempo libre antes de traslados al aeropuerto.'},
+      {time:'~17:00',title:'Traslado al aeropuerto — vuelo 19:00',type:'transfer',status:'confirmed',track:'both',transport:'uber',location:'Boston Logan Airport (BOS)',mk:'bos',detail:'Uber al aeropuerto para vuelo de regreso a las 19:00. Salida del hotel: ~16:00. Pagado por el evento.',onlyIds:['brandon']},
+      {time:'~14–15:30',title:'Traslados al aeropuerto (vuelos 16:00–17:30)',type:'transfer',status:'confirmed',track:'both',transport:'uber',location:'Boston Logan Airport (BOS)',mk:'bos',detail:'Isaac + Lucía Salcedo: salen ~13:00 (vuelo 16:00). Débora: sale ~14:30 (vuelo 17:30). Ubers pagados.',onlyFriLeaveNotBrandon:true},
+      {time:'Tarde–noche',title:'Traslados al aeropuerto (vuelos sábado)',type:'transfer',status:'confirmed',track:'both',transport:'uber',location:'Boston Logan Airport (BOS)',mk:'bos',detail:'Coordinados por Juan Carlos Suárez. Ubers pagados. Ver Mi Viaje para horarios exactos.',skipFriLeave:true},
+    ]},
+};
+
+const TRAIL_STOPS = [
+  {num:1,name:'Irish Famine Memorial',desc:'Punto de encuentro. Memorial que narra resiliencia y migración en Boston.',mk:'irish'},
+  {num:2,name:'Surgery Without Pain – MGH',desc:'Primera cirugía con anestesia en 1846. El nacimiento de la medicina moderna.',mk:'mgb'},
+  {num:3,name:'Museum of Medical History',desc:'Museo Paul S. Russell en MGH. Historia de innovaciones médicas de Boston.',addr:'2 North Grove St, Boston'},
+  {num:4,name:'Human Genome Project – Whitehead Institute',desc:'Contribuyó a secuenciar el genoma humano. Hoy referente en biología de sistemas.',addr:'455 Main St, Cambridge'},
+  {num:5,name:'Biotech Trailblazer – Biogen',desc:'Primera empresa biotech de Kendall (1978). Inició la transformación del área.',addr:'225 Binney St, Cambridge'},
+  {num:6,name:'Vaccine Breakthroughs – Moderna',desc:'Nacida en 2010. Vacuna ARNm COVID desarrollada en tiempo récord.',addr:'200 Technology Square, Cambridge'},
+  {num:7,name:'LabCentral – Biotech Startup Hub',desc:'Laboratorios plug-and-play. El punto de entrada al ecosistema para nuevas empresas.',mk:'labcentral'},
+  {num:8,name:'Inventing the Telephone',desc:'El vecindario donde trabajó Alexander Graham Bell. Origen de las telecomunicaciones.',addr:'1 Bowdoin St, Boston'},
+  {num:9,name:'MIT Stata Center',desc:'Frank Gehry. Alberga CSAIL — el laboratorio de IA y ciencias de la computación del MIT.',addr:'32 Vassar St, Cambridge'},
+  {num:10,name:'Broad Discovery Center',desc:'Referencia mundial en genómica y CRISPR. Consorcio MIT-Harvard, $700M, 60+ spin-offs.',addr:'415 Main St, Cambridge'},
+  {num:11,name:'Startup Hub – CIC',desc:'+1,000 startups en 25 años. Google Cambridge, Moderna y HubSpot pasaron por aquí.',mk:'cic'},
+  {num:12,name:'Google Cambridge',desc:'Símbolo de la llegada de grandes tech a Kendall para estar cerca del talento.',addr:'355 Main St, Cambridge'},
+  {num:13,name:'Draper Lab',desc:'I+D en sistemas de guía nacido en la era espacial. Hoy en biotech y ciberseguridad.',addr:'555 Technology Square, Cambridge'},
+];
+
+const VENUES_DATA = [
+  {name:'Le Méridien Cambridge',type:'Hotel base · Todos los días',icon:'🏨',bg:'#EFF6FF',day:'Todos',dc:'cd1 cd2 cd3 cd4',mk:'hotel',addr:'20 Sidney St, Cambridge, MA 02139',what:'Hotel boutique moderno en el corazón de Kendall Square, a pocos minutos del MIT. Centro de operaciones durante los 4 días.',why:'Punto de partida y regreso de todas las actividades. Desayunos incluidos 6:00–7:30 AM.',ask:''},
+  {name:'Catalyst Restaurant',type:'Cena de bienvenida · Día 1',icon:'🍽️',bg:'#FFF7ED',day:'Día 1',dc:'cd1',mk:'catalyst',addr:'300 Technology Square, Cambridge, MA 02139',what:'Restaurante icónico de Cambridge dentro de Technology Square. Cocina americana contemporánea y punto de reunión habitual de la comunidad tech-bio del área.',why:'Cena oficial de bienvenida y presentación del programa.',ask:''},
+  {name:'Irish Famine Memorial',type:'Punto encuentro Trail · Día 2',icon:'📍',bg:'#F5F3FF',day:'Día 2',dc:'cd2',mk:'irish',addr:'30 School St, Boston, MA 02108',what:'Memorial en Downtown Boston que conmemora la hambruna irlandesa del s. XIX. Inicio simbólico del recorrido: una historia de migración y resiliencia que resuena con la misión.',why:'Punto de inicio del Healthcare Innovation Trail.',ask:''},
+  {name:'MIT – Dr. Freddy Nguyen',type:'Sesión de Champions · Día 2',icon:'🎓',bg:'#ECFDF5',day:'Día 2',dc:'cd2',mk:'mit',addr:'25 Carleton St, Cambridge, MA 02142',what:'Physician-Scientist Fellow del MIT, Director del Catalyst Scholars Program y cofundador de Nine Diagnostics. Investigación en fotónica y nanotecnología para medicina de precisión.',why:'Conversación sobre cómo la investigación de frontera se traduce en herramientas clínicas.',ask:'¿Cómo conecta el MIT Catalyst la investigación básica con el emprendimiento clínico? ¿Qué hace posible pasar de un paper a una empresa sin perder rigor científico?'},
+  {name:'The Engine (MIT)',type:'Tough Tech · Día 2',icon:'⚙️',bg:'#F0F9FF',day:'Día 2',dc:'cd2',mk:'engine',addr:'750 Main St, Cambridge, MA 02139',what:'Aceleradora de MIT para tecnologías profundas que requieren >10 años de I+D. El mercado convencional no puede financiarlas solo. Biotech avanzada, energía nuclear, materiales de frontera.',why:'Entender cómo se financia y acelera la innovación más crítica pero más tardía.',ask:'¿Cómo distinguen entre una tecnología "tough tech" y una simplemente difícil? ¿Cómo evalúan equipos cuando la ciencia es lo único que existe?'},
+  {name:'Mass General Brigham (MGH)',type:'Talk Innovation · Día 3',icon:'🏥',bg:'#FEF2F2',day:'Día 3',dc:'cd3',mk:'mgb',addr:'55 Fruit St, Boston, MA 02114',what:'El sistema hospitalario más influyente del mundo, afiliado a Harvard. Mayor presupuesto de investigación hospitalaria del planeta. Primera cirugía con anestesia en 1846.',why:'Entender la ruta interna de innovación del hospital más importante del mundo.',ask:'¿Cómo identifica MGH qué observaciones clínicas merecen convertirse en proyectos de innovación? ¿Qué papel juega el hospital en la cadena de valor de las startups que nacen de él?'},
+  {name:'Flagship Pioneering',type:'Venture Creation Session · Día 3',icon:'🚀',bg:'#EFF6FF',day:'Día 3',dc:'cd3',mk:'flagship',addr:'55 Cambridge Pkwy, Cambridge, MA 02141',what:'No es un fondo de VC: genera hipótesis científicas y construye empresas desde cero. Fundó Moderna antes de que tuviera nombre. +100 empresas, valor total +$200B.',why:'El modelo más sofisticado del mundo para convertir ciencia en empresa.',ask:'¿Cómo distinguen una hipótesis que merece una empresa de una que merece solo un paper? ¿Qué condiciones de Cambridge hacen posible este modelo y cuáles son difícilmente replicables en LATAM?'},
+  {name:'Amgen Cambridge',type:'Visita I+D · Día 3',icon:'💊',bg:'#F0FDF4',day:'Día 3',dc:'cd3',mk:'amgen',addr:'360 Binney St, Cambridge, MA 02141',what:'Una de las biofarmacéuticas más grandes del mundo. Su campus de Cambridge es deliberadamente más ágil que su sede californiana — estrategia explícita para conectar con el ecosistema Kendall.',why:'Ver cómo una gran farmacéutica adapta su modelo para operar en un ecosistema de startups.',ask:'¿Cómo diferencia este campus de su sede principal? ¿Cuáles son los mecanismos reales de colaboración con startups de LATAM?'},
+  {name:'Harvard Innovation Labs',type:'Escalabilidad · Día 3',icon:'💡',bg:'#FFFBEB',day:'Día 3',dc:'cd3',mk:'harvard',addr:'125 Western Ave, Allston, MA 02134',what:'Ecosistema de emprendimiento de Harvard en Allston. i-lab (estudiantes), Launch Lab X (alumni) y Life Lab (ciencias de la vida). +900 startups activas, +$1B de capital desplegado.',why:'Entender los recursos que Harvard ofrece y cómo acceder desde fuera de EE.UU.',ask:'¿Tienen programas para innovadores en salud de LATAM? ¿Cómo puede un equipo externo conectar con su red de mentores e inversores?'},
+  {name:'CIC – Cambridge Innovation Center',type:'Scale UP · Día 4',icon:'🏢',bg:'#F5F3FF',day:'Día 4',dc:'cd4',mk:'cic',addr:'245 Main St, Cambridge, MA 02142',what:'Fundado en 1999, corazón operativo de Kendall. +1,000 startups: HubSpot, Google Cambridge, Moderna, Amazon Alexa. Modelo: contratos flexibles, comunidad activa, acceso a redes.',why:'Espacio de la sesión Scale UP: escalabilidad y acceso a capital.',ask:'¿Qué recursos del CIC están disponibles para startups de LATAM? ¿Existe un camino de expansión a Cambridge para equipos que ya operan en la región?'},
+  {name:'LabCentral',type:'Biotech Hub Tour · Día 4',icon:'🧬',bg:'#ECFDF5',day:'Día 4',dc:'cd4',mk:'labcentral',addr:'700 Main St, Cambridge, MA 02139',what:'Hub de biotech de Cambridge con laboratorios plug-and-play para startups en fase temprana. Sin necesidad de construir infraestructura. Residentes: Merck, Pfizer y startups de 20+ países.',why:'El acceso compartido a infraestructura costosa como modelo para reducir barreras de entrada.',ask:'¿Cuáles son los criterios de selección? ¿Pueden startups de LATAM en fase temprana aplicar de forma remota?'},
+  {name:'Fogo de Chão Boston',type:'Almuerzo de cierre · Día 4',icon:'🥩',bg:'#FFF7ED',day:'Día 4',dc:'cd4',mk:'fogo',addr:'200 Dartmouth St, Boston, MA 02116',what:'Churrascaria brasileña premium en Back Bay, Boston. Espacio del almuerzo oficial de cierre.',why:'Síntesis de aprendizajes, networking final y despedida.',ask:''},
+];
+
+const BOSTON_BRIEFS = [
+  {name:'Kendall Square y el ecosistema',type:'El modelo que visitan',icon:'🗺️',bg:'#EFF6FF',what:'En pocas cuadras de Cambridge conviven Biogen, Moderna, Google, Microsoft, Amazon, Akamai, MIT y cientos de startups. No es accidental: resultado de 80 años de decisiones sobre zonificación, inversión pública y colaboración academia-industria.',why:'El modelo Kendall es la respuesta más completa al problema central de los Champions: cómo convertir conocimiento científico en impacto real a escala.',ask:'¿Qué elementos son replicables en LATAM? ¿Cuáles dependen de condiciones históricas que no podemos crear de la noche a la mañana?'},
+  {name:'Boston & Cambridge — contexto',type:'Ciudad',icon:'🏙️',bg:'#F5F3FF',what:'La ciudad universitaria más influyente del mundo (MIT, Harvard, Tufts, BU, Northeastern) y el hub de biotech más importante del planeta. Genera más patentes per cápita que cualquier otra ciudad de EE.UU. Cambridge es una ciudad independiente de ~120,000 personas fusionada funcionalmente con Boston.',why:'El contexto ayuda a hacer mejores preguntas en cada venue.',ask:'¿Qué políticas facilitaron la concentración de innovación en Cambridge? ¿Qué errores cometió Kendall en sus primeras décadas y qué aprendió?'},
+  {name:'Consejos prácticos — Boston en abril',type:'Logística',icon:'🌤️',bg:'#FFF7ED',what:'<strong>Clima:</strong> 8–16°C. Lluvia frecuente. Chaqueta impermeable y zapatos cómodos.<br><br><strong>Dinero:</strong> USD. Propina: 18–20% en restaurantes. Tarjetas aceptadas en todas partes.<br><br><strong>Conectividad:</strong> WiFi en hotel y venues. eSIM local ~$20 USD/semana (T-Mobile, AT&T).<br><br><strong>Transporte:</strong> Uber y metro MBTA ("The T"). La mayoría de venues están caminando desde el hotel.',why:'',ask:''},
+];
+
+const FAQS = [
+  {cat:'🏨 Hotel',q:'¿Cuál es el hotel?',a:'<strong>Le Méridien Boston Cambridge</strong><br>20 Sidney St, Cambridge, MA 02139 · Tel: +1 (617) 577-0200<br>Check-in: 21 Abr · Check-out: 25 Abr (26 Abr para Juan Carlos)'},
+  {cat:'🏨 Hotel',q:'¿Horario de desayuno?',a:'Todos los días de la misión: <strong>6:00–7:30 AM</strong>. Punto de encuentro en lobby a las 7:30 AM.'},
+  {cat:'🏨 Hotel',q:'¿Qué incluye el hotel?',a:'Habitación y desayuno. No cubiertos: minibar, room service, lavandería, llamadas ni otros servicios.'},
+  {cat:'✈️ Vuelos',q:'¿Los traslados aeropuerto-hotel están cubiertos?',a:'Sí. El evento cubre todos los traslados entre BOS y el hotel. Los del sábado son coordinados por Juan Carlos Suárez.'},
+  {cat:'✈️ Vuelos',q:'¿El equipaje está cubierto?',a:'Los tiquetes incluyen <strong>solo equipaje de mano</strong>. El adicional es responsabilidad del participante.'},
+  {cat:'✈️ Vuelos',q:'¿Qué pasa si pierdo el vuelo?',a:'El participante asume los costos. INNOS y FIFARMA no se hacen responsables.'},
+  {cat:'🍽️ Comidas',q:'¿Qué comidas están incluidas?',a:'<ul><li><strong>21 Abr:</strong> Cena – Catalyst Restaurant</li><li><strong>22 Abr:</strong> Desayuno + Almuerzo (Naco Taco)</li><li><strong>23 Abr:</strong> Desayuno</li><li><strong>24 Abr:</strong> Desayuno + Almuerzo de cierre (Fogo de Chão)</li></ul>Las demás por cuenta del participante.'},
+  {cat:'🍽️ Comidas',q:'¿Restricciones dietarias?',a:'Repórtalas directamente a Brandon Hernández: <a href="https://wa.me/573205988934">+57 320 598 8934</a>'},
+  {cat:'🚨 Emergencias',q:'¿Qué hago si me pierdo del grupo?',a:'Contacta de inmediato: <strong>Brandon Hernández</strong> · <a href="https://wa.me/573205988934">WhatsApp +57 320 598 8934</a><br><br>Todos los venues están en la sección <strong>Lugares</strong>.'},
+  {cat:'🚨 Emergencias',q:'Emergencias en EE.UU.',a:'<strong>911</strong> — Policía, ambulancia, bomberos. Gratuito desde cualquier teléfono.'},
+  {cat:'🛂 Migración',q:'¿Qué declaro al entrar a EE.UU.?',a:'"<em>Participación en actividades académicas y de intercambio en el marco del programa Latam Health Champions, organizado por INNOS de la Universidad El Bosque.</em>"<ul style="margin-top:8px"><li>No recibes remuneración</li><li>Estadía: 21–25 de abril de 2026</li><li>Hospedaje: Le Méridien, 20 Sidney St, Cambridge</li></ul>'},
+  {cat:'🛂 Migración',q:'¿Qué documentos llevar?',a:'<ul><li>Carta de invitación de INNOS</li><li>Itinerario de vuelo (sección Mi Viaje)</li><li>Confirmación del hotel</li><li>Agenda de la misión (esta app)</li><li><strong>Póliza de seguro médico internacional vigente</strong> — individual, cada participante trae la propia</li></ul>'},
+  {cat:'💼 Networking',q:'¿Cómo preparo el networking?',a:'Ten listo un <strong>elevator pitch de 2 minutos</strong>. Habrá espacios en MIT, Flagship y CIC. Lleva tarjetas de presentación.'},
+  {cat:'📞 Contacto',q:'Contacto de coordinación',a:'<strong>Brandon Hernández</strong> · <a href="https://wa.me/573205988934">WhatsApp +57 320 598 8934</a><br>Cancelaciones: <strong>coordinacion@innos.co</strong>'},
+];
+
+// ════════ STATE ════════
+let CP = null;
+let currentDay = 1;
+const MAP_FILE = 'mapa_lhc_boston.html';
+
+function gm(mk,addr){ const u=(mk&&VM[mk])||null; return u||('https://maps.google.com/?q='+encodeURIComponent(addr||'')); }
+function mapsBtn(mk,addr,lbl){ const u=gm(mk,addr); return u?`<a class="maps-btn" href="${u}" target="_blank">📍 ${lbl||t('maps')}</a>`:''; }
+
+// ════════ PROFILE SCREEN ════════
+const GROUP_META = [
+  {key:'champions', icon:'🏆', label:'Champions LHC 2026',     count:'8 innovadores'},
+  {key:'org',       icon:'🏛️', label:'INNOS / FIFARMA',         count:'7 miembros del equipo'},
+  {key:'press',     icon:'📰', label:'Prensa',                   count:'3 periodistas'},
+];
+const GROUP_IDS = {
+  champions: ['luisjose','pablo','sergio','luisfernando','caroline','lenin','mariacristina','hugo'],
+  org:       ['carlos','juancarlos','brandon','raquel','luciaperez','mikaela','luciasalcedo'],
+  press:     ['debora','isaac'],
+};
+let activeGroup = null;
+let selectedProfileId = null;
+
+function buildProfileScreen() {
+  const saved = localStorage.getItem('lhc26_v4');
+  if (saved && PEOPLE.find(p=>p.id===saved)) { launchApp(saved); return; }
+  buildGroupCards();
+}
+
+function buildGroupCards() {
+  const container = document.getElementById('ps-groups');
+  container.innerHTML = GROUP_META.map(g => {
+    const opts = GROUP_IDS[g.key].map(id => {
+      const p = PEOPLE.find(x=>x.id===id);
+      return `<option value="${p.id}">${p.name} · ${p.role.split('–')[0].trim().split('·')[0].trim()}</option>`;
+    }).join('');
+    return `
+      <div class="ps-gcard" id="gc-${g.key}">
+        <div class="ps-ghdr" onclick="toggleGroup('${g.key}')">
+          <div class="ps-gicon">${g.icon}</div>
+          <div class="ps-ginfo">
+            <div class="ps-gname">${g.label}</div>
+            <div class="ps-gcount">${g.count}</div>
+          </div>
+          <div class="ps-gchev">▼</div>
+        </div>
+        <div class="ps-gdrop">
+          <div class="ps-gsel-wrap">
+            <select class="ps-gsel" onchange="previewProfile(this.value)">
+              <option value="">— Selecciona tu nombre —</option>
+              ${opts}
+            </select>
+            <span class="ps-gsel-arrow">▼</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleGroup(key) {
+  if (activeGroup === key) {
+    document.getElementById('gc-'+key).classList.remove('active');
+    activeGroup = null;
+  } else {
+    if (activeGroup) document.getElementById('gc-'+activeGroup).classList.remove('active');
+    document.getElementById('gc-'+key).classList.add('active');
+    activeGroup = key;
+  }
+}
+
+function previewProfile(id) {
+  const preview = document.getElementById('ps-preview');
+  const av = document.getElementById('ps-preview-av');
+  const nm = document.getElementById('ps-preview-name');
+  const rl = document.getElementById('ps-preview-role');
+  const btn = document.getElementById('ps-confirm-btn');
+  selectedProfileId = id || null;
+  if (!id) { preview.classList.remove('visible'); btn.classList.remove('visible'); return; }
+  const p = PEOPLE.find(x=>x.id===id);
+  const ini = p.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+  av.textContent = ini; av.style.background = p.color;
+  nm.textContent = p.name;
+  rl.textContent = p.role;
+  preview.classList.add('visible');
+  btn.classList.add('visible');
+}
+
+function confirmProfile() {
+  if (!selectedProfileId) return;
+  selectProfile(selectedProfileId);
+}
+
+function selectProfile(id) {
+  localStorage.setItem('lhc26_v4', id);
+  launchApp(id);
+}
+
+function launchApp(id) {
+  CP = PEOPLE.find(p=>p.id===id);
+  if (!CP) { localStorage.removeItem('lhc26_v4'); buildProfileScreen(); return; }
+
+  LANG = CP.lang || 'es';
+
+  document.getElementById('profile-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // Update nav labels
+  const navMap = {inicio:'nb-inicio',agenda:'nb-agenda',lugares:'nb-lugares',viaje:'nb-viaje',mapa:'nb-mapa',del:'nb-del',faq:'nb-faq',boston:'nb-bos'};
+  document.getElementById('nb-inicio').textContent = t('inicio');
+  document.getElementById('nb-agenda').textContent = t('agenda');
+  document.getElementById('nb-lugares').textContent = t('lugares');
+  document.getElementById('nb-viaje').textContent = t('viaje');
+  document.getElementById('nb-mapa').textContent = t('mapa');
+  document.getElementById('nb-del').textContent = t('del');
+  document.getElementById('nb-faq').textContent = t('faq');
+  document.getElementById('nb-bos').textContent = t('boston');
+
+  const ini = CP.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+  document.getElementById('chip-av').textContent = ini;
+  document.getElementById('chip-av').style.background = CP.color;
+  document.getElementById('chip-nm').textContent = CP.name.split(' ')[0];
+
+  buildInicio();
+  buildAgenda();
+  buildLugares();
+  buildViaje();
+  buildMapa();
+  buildDelegacion();
+  buildFaq();
+  buildBoston();
+}
+
+function resetProfile() {
+  localStorage.removeItem('lhc26_v4');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('profile-screen').style.display = 'flex';
+  CP = null; LANG = 'es'; activeGroup = null; selectedProfileId = null;
+  document.getElementById('ps-preview').classList.remove('visible');
+  document.getElementById('ps-confirm-btn').classList.remove('visible');
+  buildGroupCards();
+}
+
+// ════════ VIEWS ════════
+function showView(id, btn) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ════════ HOME ════════
+function getTodayDay() {
+  const now = new Date();
+  const d = ['2026-04-21','2026-04-22','2026-04-23','2026-04-24'];
+  for (let i=0;i<d.length;i++) if(now.toDateString()===new Date(d[i]+'T12:00:00').toDateString()) return i+1;
+  return null;
+}
+
+function buildInicio() {
+  const el = document.getElementById('view-inicio');
+  const fn = CP.name.split(' ')[0];
+  const td = getTodayDay();
+  const sd = td||1;
+  const day = AGENDA[sd];
+  const pfix = td ? t('today_prefix') : t('preview_prefix');
+  const evs = filterEvents(day.events,sd).slice(0,4);
+
+  el.innerHTML = `
+    <div class="home-hero fade-in">
+      <div class="home-badge"><span>Latam Health Champions 2026</span></div>
+      <div class="home-greeting">${LANG==='pt'?'Olá':'Hola'}, ${fn} 👋</div>
+      <div class="home-title">${LANG==='pt'?'Missão':'Misión'}<br><em>Boston</em></div>
+      <div class="home-dates">April 21 – 24, 2026 · Le Méridien Cambridge</div>
+    </div>
+    <div class="home-stats fade-in-2">
+      <div class="home-stat"><div class="n">8</div><div class="l">Champions</div></div>
+      <div class="home-stat"><div class="n">4</div><div class="l">${LANG==='pt'?'Dias':'Días'}</div></div>
+      <div class="home-stat"><div class="n">12</div><div class="l">Venues</div></div>
+      <div class="home-stat"><div class="n">17</div><div class="l">${LANG==='pt'?'Pessoas':'Personas'}</div></div>
+    </div>
+    <div class="home-about fade-in-3">
+      <h3>${t('about_title')}</h3>
+      <p>${t('about_body')}</p>
+    </div>
+    <div class="home-today fade-in-3">
+      <div class="home-today-hdr">
+        <div><div class="lbl">${pfix}${day.label.split('·')[1]?.trim()||day.label}</div><div class="day">${day.title}</div></div>
+      </div>
+      ${evs.map(ev=>`<div class="home-ev">
+        <div class="home-ev-time">${ev.time}</div>
+        <div><div class="home-ev-name">${ev.title.replace(/^\[OPCIONAL\] /,'')}</div>${ev.location?`<div class="home-ev-loc">📍 ${ev.location}</div>`:''}</div>
+      </div>`).join('')}
+      <div style="padding:9px 15px;border-top:1px solid var(--border)"><span onclick="document.getElementById('nb-agenda').click()" style="font-size:12px;color:var(--sky);font-weight:600;cursor:pointer;">${t('see_full')}</span></div>
+    </div>
+    <div class="home-cards fade-in-4">
+      <div class="home-card">
+        <div class="home-card-icon">🏨</div>
+        <div class="home-card-title">${t('hotel_lbl')}</div>
+        <div class="home-card-text">Le Méridien Cambridge<br>20 Sidney St<br><a href="${VM.hotel}" target="_blank">${LANG==='pt'?'Abrir no Maps →':'Abrir en Maps →'}</a></div>
+      </div>
+      <div class="home-card">
+        <div class="home-card-icon">📞</div>
+        <div class="home-card-title">${t('contact')}</div>
+        <div class="home-card-text">Brandon Hernández<br>Equipo INNOS<br><a href="https://wa.me/573205988934">WhatsApp →</a></div>
+      </div>
+    </div>
+    <div class="home-quick fade-in-4">
+      <div class="home-qbtn" onclick="document.getElementById('nb-viaje').click()"><div class="icon">✈️</div><div class="lbl">${t('viaje')}</div></div>
+      <div class="home-qbtn" onclick="document.getElementById('nb-lugares').click()"><div class="icon">📍</div><div class="lbl">${t('lugares')}</div></div>
+      <div class="home-qbtn" onclick="document.getElementById('nb-mapa').click()"><div class="icon">🗺️</div><div class="lbl">${t('mapa')}</div></div>
+      <div class="home-qbtn" onclick="document.getElementById('nb-faq').click()"><div class="icon">❓</div><div class="lbl">${t('faq')}</div></div>
+    </div>`;
+}
+
+// ════════ AGENDA ════════
+function filterEvents(events, day) {
+  const isPress = CP.persona==='press', departsFri=CP.departsFri, isBrandon=CP.id==='brandon';
+  return events.filter(ev => {
+    if (ev.onlyIds && !ev.onlyIds.includes(CP.id)) return false;
+    if (ev.onlyFriLeaveNotBrandon) return departsFri && !isBrandon;
+    if (ev.onlyFriLeave && !departsFri) return false;
+    if (ev.skipFriLeave && departsFri) return false;
+    if (ev.track==='champions' && isPress) return false;
+    if (ev.track==='press' && !isPress) return false;
+    if (ev.type==='optional') {
+      if (ev.track==='press' && !isPress) return false;
+      if (ev.track==='champions' && isPress) return false;
+    }
+    return true;
+  });
+}
+
+function buildAgenda() {
+  const el = document.getElementById('view-agenda');
+  const pills = [1,2,3,4].map((d,i)=>{
+    const s=['Mar 21','Mié 22','Jue 23','Vie 24'][i];
+    return `<div class="day-pill${d===1?' active':''}" onclick="showDay(${d},this)">${LANG==='pt'?'Dia':'Día'} ${d} · ${s}</div>`;
+  }).join('');
+  const days=[1,2,3,4].map(d=>`<div id="dc-${d}" style="${d===1?'':'display:none'}">${buildDayHTML(d)}</div>`).join('');
+  el.innerHTML=`<h2 class="v-title">${t('vtitle_agenda')}</h2><p class="v-sub">${LANG==='pt'?'Toque em cada evento para ver detalhes':'Toca cada evento para ver detalles'}</p><div class="day-pills">${pills}</div>${days}`;
+}
+
+function buildDayHTML(d) {
+  const day=AGENDA[d], events=filterEvents(day.events,d);
+  const tC={main:'#059669',transfer:'#2B9ED8',coms:'#7C3AED',optional:'#D97706',pending:'#D97706'};
+  const tL={confirmed:t('confirmed'),pending:t('pending'),transfer:t('transfer'),coms:t('coms'),optional:t('optional')};
+  const rows = events.map((ev,i)=>{
+    const isLast=i===events.length-1;
+    const tk=ev.status==='pending'?'pending':ev.type==='transfer'?'transfer':ev.type==='coms'?'coms':ev.type==='optional'?'optional':'main';
+    const dc=tC[tk]||tC.main;
+    const lbl=tL[ev.status==='pending'?'pending':ev.type]||tL.confirmed;
+    const tagC={main:'tag-ok',pending:'tag-pend',transfer:'tag-uber',coms:'tag-coms',optional:'tag-opt'}[tk]||'tag-ok';
+    const wt=ev.transport==='walk'?`<span class="tag tag-walk">🚶 ${ev.walkMin?ev.walkMin+'min':t('walk')}</span>`:ev.transport==='uber'?`<span class="tag tag-uber">🚕 ${t('uber')}</span>`:'';
+    const mb=gm(ev.mk,ev.addr);
+    const trail=ev.hasTrail?buildTrailHTML():'';
+    return `<div class="tl-row">
+      <div class="tl-time">${ev.time}</div>
+      <div class="tl-stem">
+        <div class="tl-dot" style="background:${dc}"></div>
+        ${!isLast?`<div class="tl-line" style="background:${dc}22"></div>`:''}
+      </div>
+      <div class="tl-card" style="border-left-color:${dc}" onclick="this.classList.toggle('open')">
+        <div class="tl-inner">
+          <div class="tl-card-title">${ev.title}</div>
+          <div class="tl-chips">
+            <span class="tag ${tagC}">${lbl}</span>${wt}
+            ${ev.location?`<span style="font-size:10px;color:var(--muted)">📍 ${ev.location}</span>`:''}
+          </div>
+        </div>
+        <div class="tl-detail">
+          <div class="tl-dtext">${ev.detail}</div>
+          ${ev.addr?`<div class="tl-addr">📍 ${ev.addr}</div>`:''}
+          ${mb?`<a class="maps-btn" href="${mb}" target="_blank">📍 ${t('maps')}</a>`:''}
+          ${trail}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="day-hero"><div class="day-hero-n">${day.label}</div><div class="day-hero-t">${day.title}</div><div class="day-hero-s">${day.sub}</div></div><div>${rows}</div>`;
+}
+
+function buildTrailHTML() {
+  const stops=TRAIL_STOPS.map(s=>{
+    const u=gm(s.mk,s.addr);
+    return `<div class="trail-stop">
+      <div class="trail-num">${s.num}</div>
+      <div><div class="trail-name">${s.name}</div><div class="trail-desc">${s.desc}</div>${u?`<a class="trail-link" href="${u}" target="_blank">📍 Maps</a>`:''}</div>
+    </div>`;
+  }).join('');
+  return `<div class="trail-toggle" onclick="event.stopPropagation();var l=this.nextElementSibling;l.classList.toggle('open');this.querySelector('.arr').textContent=l.classList.contains('open')?'▲':'▼'"><span>🗺️ ${t('trail_btn')}</span><span class="arr">▼</span></div><div class="trail-list">${stops}</div>`;
+}
+
+function showDay(d,btn) {
+  document.querySelectorAll('.day-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  [1,2,3,4].forEach(i=>document.getElementById('dc-'+i).style.display=i===d?'':'none');
+}
+
+// ════════ LUGARES ════════
+function buildLugares() {
+  const el=document.getElementById('view-lugares');
+  const cards=VENUES_DATA.map(v=>{
+    const u=gm(v.mk,v.addr);
+    const ask=v.ask?`<div class="lugar-ask"><strong>💬 ${t('briefing_ask')}</strong>${v.ask}</div>`:'';
+    return `<div class="lugar-card">
+      <div class="lugar-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="lugar-icon" style="background:${v.bg}">${v.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div class="lugar-name">${v.name}</div>
+          <div class="lugar-addr">${v.addr}</div>
+          <div class="lugar-chips"><span class="chip-d ${v.dc.split(' ')[0]}">${v.day}</span><span style="font-size:10px;color:var(--muted)">${v.type}</span></div>
+        </div>
+      </div>
+      <div class="lugar-body">
+        <div class="lugar-sl">${t('briefing_what')}</div><div class="lugar-txt">${v.what}</div>
+        ${v.why?`<div class="lugar-sl">${t('briefing_why')}</div><div class="lugar-txt">${v.why}</div>`:''}
+        ${ask}
+        ${u?`<div style="margin-top:11px"><a class="maps-btn" href="${u}" target="_blank">📍 ${t('maps')}</a></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML=`<h2 class="v-title">${t('vtitle_lugares')}</h2><p class="v-sub">${LANG==='pt'?'Briefing estratégico por local. Toque para expandir':'Briefing estratégico por venue. Toca para expandir'}</p>${cards}`;
+}
+
+// ════════ MI VIAJE ════════
+function buildViaje() {
+  const el=document.getElementById('view-viaje');
+  const fd=FLIGHTS[CP.id];
+  const tr=TRANSFERS[CP.id];
+  if (!fd) { el.innerHTML=`<h2 class="v-title">${t('vtitle_viaje')}</h2><p style="color:var(--muted);padding:20px 0;font-size:13px">Sin información de vuelo.</p>`; return; }
+
+  const h = fd.hotel;
+  const nightWord = LANG==='pt' ? 'noites' : 'noches';
+
+  function legBlock(leg, isBos) {
+    const highlight = leg.from==='BOS'||leg.to==='BOS';
+    return `<div class="fl-leg ${highlight?'fl-leg-hl':''}">
+      <div class="fl-leg-left">
+        <div class="fl-code2">${leg.from}</div>
+        <div class="fl-time2 ${leg.from==='BOS'?'main-time':''}">${leg.dep}</div>
+        <div class="fl-date2">${leg.date||''}</div>
+      </div>
+      <div class="fl-leg-mid2">
+        <div class="fl-fn">${leg.fl}</div>
+        <div class="fl-arr-line">✈</div>
+        ${leg.note?`<div class="fl-note">${leg.note}</div>`:''}
+      </div>
+      <div class="fl-leg-right">
+        <div class="fl-code2 ${leg.to==='BOS'?'sky':''}">${leg.to}</div>
+        <div class="fl-time2 ${leg.to==='BOS'?'main-time':''}">${leg.arr}</div>
+      </div>
+    </div>`;
+  }
+
+  el.innerHTML = `
+    <h2 class="v-title">${t('vtitle_viaje')}</h2>
+    <p class="v-sub">${CP.name} · ${CP.role}</p>
+
+    <div class="hotel-banner">
+      <div style="font-size:18px;margin-bottom:6px">🏨</div>
+      <div class="hotel-banner-nm">Le Méridien Boston Cambridge</div>
+      <div class="hotel-banner-d">
+        <strong>Dirección:</strong> 20 Sidney St, Cambridge, MA 02139 · Tel: +1 (617) 577-0200<br>
+        <strong>Check-in:</strong> <span style="color:var(--sky)">${h.checkin}</span> &nbsp;·&nbsp;
+        <strong>Check-out:</strong> <span style="color:var(--sky)">${h.checkout}</span> &nbsp;·&nbsp;
+        <strong>${h.nights} ${nightWord}</strong><br>
+        <strong>Coordinación:</strong> Brandon Hernández · <a href="https://wa.me/573205988934" style="color:var(--sky)">+57 320 598 8934</a>
+      </div>
+    </div>
+
+    <div class="fl-block">
+      <div class="fl-hdr fh-arr">${t('arr_hdr')}</div>
+      ${fd.arr.map(leg=>legBlock(leg,true)).join('')}
+    </div>
+
+    <div class="fl-block">
+      <div class="fl-hdr fh-dep">${t('dep_hdr')}</div>
+      ${fd.dep.map(leg=>legBlock(leg,false)).join('')}
+    </div>
+
+    ${tr ? `<div class="transfer-block">
+      <div class="transfer-hdr">🚗 ${t('pickup_lbl')}</div>
+      <div class="transfer-item">
+        <div class="transfer-dir tdir-arr">▼ ${t('arr_pickup')}</div>
+        <div class="transfer-row"><span class="transfer-icon">👤</span><div class="transfer-txt"><strong>${tr.arrDriver}</strong></div></div>
+        ${tr.arrWith?`<div class="transfer-row"><span class="transfer-icon">👥</span><div class="transfer-txt">${LANG==='pt'?'Viajam com você':'Viajan contigo'}: ${tr.arrWith}</div></div>`:''}
+        <div class="transfer-row"><span class="transfer-icon">ℹ️</span><div class="transfer-txt">${tr.arrNote}</div></div>
+      </div>
+      <div class="transfer-item">
+        <div class="transfer-dir tdir-dep">▲ ${t('dep_pickup')}</div>
+        <div class="transfer-row"><span class="transfer-icon">👤</span><div class="transfer-txt"><strong>${tr.depDriver}</strong></div></div>
+        ${tr.depWith?`<div class="transfer-row"><span class="transfer-icon">👥</span><div class="transfer-txt">${LANG==='pt'?'Viajam com você':'Viajan contigo'}: ${tr.depWith}</div></div>`:''}
+        <div class="transfer-row"><span class="transfer-icon">🕐</span><div class="transfer-txt">${LANG==='pt'?'Saída do hotel':'Salida del hotel'}: <strong>${fd.depLeave}</strong></div></div>
+        <div class="transfer-row"><span class="transfer-icon">ℹ️</span><div class="transfer-txt">${tr.depNote}</div></div>
+      </div>
+    </div>` : ''}`;
+}
+
+
+// ════════ MAPA ════════
+function buildMapa() {
+  const el=document.getElementById('view-mapa');
+  const routeLinks=[
+    {day:2,color:'#2B9ED8',label:'Día 2 — Healthcare Innovation Trail',stops:'Irish Memorial → Trail → Naco Taco → MIT → The Engine',url:'https://www.google.com/maps/dir/Irish+Famine+Memorial+30+School+St+Boston/Massachusetts+General+Hospital+Boston/MIT+Cambridge+MA/750+Main+St+Cambridge+MA'},
+    {day:3,color:'#7C3AED',label:'Día 3 — MGB · Flagship · Amgen · Harvard',stops:'MGH → Flagship → Amgen → Harvard i-lab',url:'https://www.google.com/maps/dir/55+Fruit+St+Boston+MA/55+Cambridge+Pkwy+Cambridge+MA/360+Binney+St+Cambridge+MA/125+Western+Ave+Allston+MA'},
+    {day:4,color:'#059669',label:'Día 4 — Scale UP · LabCentral · Farewell',stops:'CIC → LabCentral → Fogo de Chão',url:'https://www.google.com/maps/dir/245+Main+St+Cambridge+MA/700+Main+St+Cambridge+MA/200+Dartmouth+St+Boston+MA'},
+  ];
+  el.innerHTML=`
+    <h2 class="v-title">${t('vtitle_mapa')}</h2>
+    <p class="v-sub">${LANG==='pt'?'Todos os locais e rotas da missão':'Todos los venues y rutas de la misión'}</p>
+    <div class="map-section">
+      <div class="map-section-hdr">
+        <h3>${LANG==='pt'?'Mapa interativo':'Mapa interactivo'}</h3>
+        <p>${LANG==='pt'?'Todos os locais com pinos coloridos por dia':'Todos los venues con pines por día y rutas'}</p>
+      </div>
+      <button class="map-open-btn" onclick="window.open('${MAP_FILE}','_blank')">
+        ${t('map_open')}
+      </button>
+    </div>
+    <div class="map-section">
+      <div class="map-section-hdr">
+        <h3>${t('map_routes')}</h3>
+        <p>${LANG==='pt'?'Abre no app Google Maps do celular':'Abre en la app Google Maps del celular'}</p>
+      </div>
+      <div class="map-day-links">
+        <div class="map-day-link-title">Rutas confirmadas</div>
+        ${routeLinks.map(r=>`<a class="map-route-btn" href="${r.url}" target="_blank">
+          <div class="map-route-dot" style="background:${r.color}"></div>
+          <div><div class="map-route-name">${r.label}</div><div class="map-route-stops">${r.stops}</div></div>
+        </a>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ════════ DELEGACIÓN ════════
+function buildDelegacion(filter) {
+  filter=filter||'all';
+  const el=document.getElementById('view-delegacion');
+  const groups=[
+    {label:'Champions LHC 2026',key:'champion'},
+    {label:'INNOS',key:'innos'},
+    {label:'FIFARMA & Organización',key:'fifarma'},
+    {label:LANG==='pt'?'Imprensa':'Prensa',key:'press'},
+  ];
+  const btns=['all','champion','innos','fifarma','press'].map(f=>
+    `<div class="del-fbtn${f===filter?' active':''}" onclick="buildDelegacion('${f}')">${{all:t('all'),champion:t('champions'),innos:'INNOS',fifarma:'FIFARMA & Org.',press:t('press')}[f]}</div>`
+  ).join('');
+  const cards=groups.filter(g=>filter==='all'||g.key===filter).map(g=>{
+    const ppl=PEOPLE.filter(p=>p.group===g.key);
+    if(!ppl.length) return '';
+    return `<div class="del-glabel">${g.label} (${ppl.length})</div><div class="del-grid">${ppl.map(p=>{
+      const ini=p.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+      return `<div class="del-card">
+        <div class="del-av" style="background:${p.color}">${ini}</div>
+        <div class="del-flag">${p.flag||''}</div>
+        <div class="del-name">${p.name}</div>
+        <div class="del-role">${p.role}</div>
+        ${p.phone?`<div style="margin-top:4px"><a href="https://wa.me/${p.phone.replace(/\D/g,'')}" style="font-size:10px;color:var(--sky)">📱 ${p.phone}</a></div>`:''}
+      </div>`;
+    }).join('')}</div>`;
+  }).join('');
+  el.innerHTML=`<h2 class="v-title">${t('vtitle_del')}</h2><p class="v-sub">${PEOPLE.length} personas</p><div class="del-filter">${btns}</div>${cards}`;
+}
+
+// ════════ FAQ ════════
+function buildFaq() {
+  const el=document.getElementById('view-faq');
+  let lc='',html='';
+  FAQS.forEach(f=>{
+    if(f.cat!==lc){html+=`<div class="faq-cat">${f.cat}</div>`;lc=f.cat;}
+    html+=`<div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">${f.q}<span class="faq-icon">+</span></div><div class="faq-a">${f.a}</div></div>`;
+  });
+  el.innerHTML=`<h2 class="v-title">${t('vtitle_faq')}</h2><p class="v-sub">${LANG==='pt'?'Respostas rápidas':'Respuestas rápidas a las dudas más frecuentes'}</p>${html}`;
+}
+
+// ════════ BOSTON ════════
+function buildBoston() {
+  const el=document.getElementById('view-boston');
+  const overviews=BOSTON_BRIEFS.map(b=>`
+    <div class="briefing-card">
+      <div class="briefing-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="briefing-icon" style="background:${b.bg}">${b.icon}</div>
+        <div><div class="briefing-name">${b.name}</div><div class="briefing-type">${b.type}</div></div>
+      </div>
+      <div class="briefing-body">
+        <div class="briefing-sl">${t('briefing_context')}</div><div class="briefing-txt">${b.what}</div>
+        ${b.why?`<div class="briefing-sl">${t('briefing_mission')}</div><div class="briefing-txt">${b.why}</div>`:''}
+        ${b.ask?`<div class="briefing-ask"><strong>💬 ${t('briefing_carry')}</strong>${b.ask}</div>`:''}
+      </div>
+    </div>`).join('');
+  const venCards=VENUES_DATA.filter(v=>v.ask).map(v=>`
+    <div class="briefing-card">
+      <div class="briefing-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="briefing-icon" style="background:${v.bg}">${v.icon}</div>
+        <div><div class="briefing-name">${v.name}</div><div class="briefing-type">${v.type}</div></div>
+      </div>
+      <div class="briefing-body">
+        <div class="briefing-sl">${t('briefing_what')}</div><div class="briefing-txt">${v.what}</div>
+        <div class="briefing-sl">${t('briefing_why')}</div><div class="briefing-txt">${v.why}</div>
+        <div class="briefing-ask"><strong>💬 ${t('briefing_ask')}</strong>${v.ask}</div>
+        <div style="margin-top:11px">${mapsBtn(v.mk,v.addr)}</div>
+      </div>
+    </div>`).join('');
+  el.innerHTML=`
+    <h2 class="v-title">${t('vtitle_bos')}</h2>
+    <p class="v-sub">${LANG==='pt'?'Contexto estratégico e briefing por local':'Contexto estratégico y briefing por venue'}</p>
+    <div class="boston-intro">
+      <h3>${LANG==='pt'?'A capital mundial da inovação em saúde':'La capital mundial de la innovación en salud'}</h3>
+      <p>${LANG==='pt'?'Boston e Cambridge concentram mais laboratórios de biotecnologia por km² do que qualquer outra cidade do planeta. Harvard, MIT, MGH e dezenas de startups de classe mundial compartilham poucas quadras em Kendall Square. Esta seção te prepara para aprovechar ao máximo cada visita.':'Boston y Cambridge concentran más laboratorios de biotecnología por km² que cualquier otra ciudad del planeta. Esta sección te prepara para aprovechar cada visita.'}</p>
+    </div>
+    ${overviews}
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border)">${t('briefing_ask')} por venue</div>
+    ${venCards}`;
+}
+
+// ════════ INIT ════════
+buildProfileScreen();
+</script>
+</body>
+</html>
